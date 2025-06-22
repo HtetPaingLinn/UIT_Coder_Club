@@ -218,7 +218,7 @@ export default function About() {
                   </p>
                   <div className="border-l-4 border-[#387d8a] pl-6 py-2">
                     <p className="text-xl font-semibold text-[#387d8a] italic">
-                      "Grow Together, Succeed Together"
+                      &ldquo;Grow Together, Succeed Together&rdquo;
                     </p>
                   </div>
                 </div>
@@ -588,7 +588,7 @@ export default function About() {
           <div className="container text-center">
             <h2 className="mt-10 mb-6">Join Our Community</h2>
             <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-              Whether you're a beginner or an experienced developer, there's a place for you
+              Whether you&apos;re a beginner or an experienced developer, there&apos;s a place for you
               in our community. Join us to learn, grow, and make lasting connections.
             </p>
             <button className="btn btn-primary mb-10">

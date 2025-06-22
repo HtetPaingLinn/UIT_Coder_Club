@@ -67,7 +67,7 @@ const latestAnnouncements = [
 ];
 
 
-export default function page() {
+export default function Page() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   return (
     <>

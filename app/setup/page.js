@@ -295,7 +295,7 @@ export default function Page() {
                                 value={major} 
                                 onChange={(e) => setMajor(e.target.value)}
                                 className="w-full px-4 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                                disabled={!enrolledYear || parseInt(enrolledYear) <= 2}
+                                disabled={!enrolledYear || parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' : false}
                             >
                                 <option value="">
                                     {!enrolledYear ? 'Select a major' : 
@@ -470,7 +470,7 @@ export default function Page() {
                             value={major} 
                             onChange={(e) => setMajor(e.target.value)}
                             className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            disabled={!enrolledYear || parseInt(enrolledYear) <= 2}
+                            disabled={!enrolledYear || parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' : false}
                         >
                             <option value="">
                                 {!enrolledYear ? 'Select a major' : 
@@ -635,7 +635,7 @@ export default function Page() {
                                 value={major} 
                                 onChange={(e) => setMajor(e.target.value)}
                                 className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                disabled={!enrolledYear || parseInt(enrolledYear) <= 2}
+                                disabled={!enrolledYear || parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' : false}
                             >
                                 <option value="">
                                     {!enrolledYear ? 'Select a major' : 

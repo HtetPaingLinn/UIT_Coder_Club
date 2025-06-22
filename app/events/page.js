@@ -311,7 +311,7 @@ export default function Events() {
                 My Registered Events
               </h2>
               <p className="text-gray-600">
-                Events you've signed up for
+                Events you&apos;ve signed up for
               </p>
             </div>
 

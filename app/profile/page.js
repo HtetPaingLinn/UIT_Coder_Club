@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import Loading from '@/components/Loading'
 
-export default function page() {
+export default function Page() {
   const { currentUser, loading } = useAuth()
   const router = useRouter()
   const [showLoading, setShowLoading] = useState(true)
