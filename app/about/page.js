@@ -145,7 +145,7 @@ export default function About() {
               <h2 className="text-3xl font-bold mb-4">Who We Are</h2>
               <div className="w-24 h-1 bg-[#387d8a] mx-auto mb-6"></div>
               <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
-                A dynamic community of UIT students innovating in AI and Web Development, shaping Myanmar's tech future.
+                A dynamic community of UIT students innovating in AI and Web Development, shaping Myanmar&apos;s tech future.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-12">
@@ -331,7 +331,7 @@ export default function About() {
                   <h3 className="text-xl font-bold text-center mb-1">Htet Paing Linn</h3>
                   <p className="text-primary text-center mb-1 text-base">Vice President</p>
                   <p className="text-gray-600 text-center text-sm">Leads club vision, events, and external collaborations</p>
-                  <p className="text-gray-600 text-center text-sm">Drove the development of the club's website from scratch</p>
+                  <p className="text-gray-600 text-center text-sm">Drove the development of the club&apos;s website from scratch</p>
 
                 </div>
               </div>
@@ -434,7 +434,7 @@ export default function About() {
                   <h3 className="text-xl font-bold text-center mb-1">Htet Myet Zaw</h3>
                   <p className="text-primary text-center mb-1 text-base">General Secretary <br/> (Web)</p>
                   <p className="text-gray-600 text-center text-sm">Full-Stack Development Lead</p>
-                  <p className="text-gray-600 text-center text-sm">Led the club's website development from scretch to deployment.</p>
+                  <p className="text-gray-600 text-center text-sm">Led the club&apos;s website development from scretch to deployment.</p>
                 </div>
               </div>
 
@@ -455,7 +455,7 @@ export default function About() {
                   </div>
                   <h3 className="text-xl font-bold text-center mb-1">Aung Kaung Myat</h3>
                   <p className="text-primary text-center mb-1 text-base">Deputy General Secretary (Web)</p>
-                  <p className="text-gray-600 text-center text-sm">Frontend/UI Lead, Builder of the club's website</p>
+                  <p className="text-gray-600 text-center text-sm">Frontend/UI Lead, Builder of the club&apos;s website</p>
                   <p className="text-gray-600 text-center text-sm">Supports full-stack development and project deployment</p>
                 </div>
               </div>

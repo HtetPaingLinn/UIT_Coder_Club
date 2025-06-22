@@ -388,7 +388,7 @@ export default function Events() {
                   No Events Registered Yet
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  You haven't registered for any events yet. Browse the calendar below to find exciting events to join!
+                  You haven&apos;t registered for any events yet. Browse the calendar below to find exciting events to join!
                 </p>
               </div>
             )}

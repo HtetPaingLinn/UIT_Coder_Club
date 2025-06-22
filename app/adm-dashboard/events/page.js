@@ -97,7 +97,7 @@ export default function EventsPage() {
       today.setHours(0, 0, 0, 0);
       
       if (selectedDate.getTime() === today.getTime() && isAfter2PM()) {
-        newErrors.date = "Today's date cannot be used after 2:00 PM. Please select tomorrow or a later date.";
+        newErrors.date = "Today&apos;s date cannot be used after 2:00 PM. Please select tomorrow or a later date.";
       }
     }
 
@@ -141,7 +141,7 @@ export default function EventsPage() {
       today.setHours(0, 0, 0, 0);
       
       if (selectedDate.getTime() === today.getTime() && isAfter2PM()) {
-        setErrors(prev => ({ ...prev, date: "Today's date cannot be used after 2:00 PM. Please select tomorrow or a later date." }));
+        setErrors(prev => ({ ...prev, date: "Today&apos;s date cannot be used after 2:00 PM. Please select tomorrow or a later date." }));
       } else {
         setErrors(prev => ({ ...prev, date: '' }));
       }

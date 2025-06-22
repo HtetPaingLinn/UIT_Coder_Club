@@ -177,10 +177,10 @@ export default function page() {
                 Wondering
               </h2>
               <h2 className="text-4xl sm:text-5xl md:text-7xl font-black text-[#387d8a] mb-4 md:mb-6 leading-tight">
-                What's up?
+                What&apos;s up?
               </h2>
               <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 md:mb-8 font-medium">
-                There's always something <span className="text-[#387d8a]">new</span> to look forward to. Keep an eye out for the latest Computing Club <span className="text-[#387d8a]">events</span>!
+                There&apos;s always something <span className="text-[#387d8a]">new</span> to look forward to. Keep an eye out for the latest Computing Club <span className="text-[#387d8a]">events</span>!
               </p>
               <a href="/events" className="inline-flex items-center px-4 py-2 mb-4 sm:px-6 sm:py-3 rounded-lg bg-[#387d8a] text-white font-medium hover:bg-[#2c5f6a] transition-colors duration-200">
                 View Events

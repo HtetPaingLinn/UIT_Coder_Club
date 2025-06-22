@@ -204,7 +204,7 @@ export default function Page() {
             {screenSize === 'mobile' ? (
               <div className="flex-1 flex flex-col px-6 py-6">
                 <div className="w-full">
-                    <h1 className="text-2xl sm:text-3xl font-bold dark:text-white mb-8">Nice to meet you! Let's get acquainted.</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold dark:text-white mb-8">Nice to meet you! Let&apos;s get acquainted.</h1>
                     
                     {/* Card for mobile - placed below heading with proper spacing */}
                     <div className="flex justify-center mb-8">
@@ -382,7 +382,7 @@ export default function Page() {
             ) : screenSize === 'tablet' ? (
               <div className="flex-1 flex flex-col px-8 py-8 max-w-[800px] mx-auto">
                 <div className="w-full space-y-8">
-                    <h1 className="text-3xl font-bold mb-6 dark:text-white">Nice to meet you! Let's get acquainted.</h1>
+                    <h1 className="text-3xl font-bold mb-6 dark:text-white">Nice to meet you! Let&apos;s get acquainted.</h1>
                     
                     {/* Card for tablet - placed between title and form */}
                     <div className="flex justify-center mb-8">
@@ -554,7 +554,7 @@ export default function Page() {
                 {/* Desktop Layout - Left Form Section */}
                 <div className="flex-1 flex flex-col px-16 py-12 max-w-[800px]">
                     <div className="w-full space-y-6 mb-8">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 dark:text-white">Nice to meet you! Let's get acquainted.</h1>
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 dark:text-white">Nice to meet you! Let&apos;s get acquainted.</h1>
                         
                         {error && (
                           <div className="bg-red-500/20 text-red-200 p-4 rounded-md">

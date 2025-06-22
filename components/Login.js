@@ -106,7 +106,7 @@ export default function Login(props) {
         </div>
 
         <p className='text-center mt-6 sm:mt-8 text-sm sm:text-base text-gray-700 dark:text-gray-300'>
-          {isRegister ? "Already have an account? " : "Don't have an account? "}
+          {isRegister ? "Already have an account? " : "Don&apos;t have an account? "}
           <button 
             onClick={() => { setIsRegister(!isRegister); setErrorMessage('') }} 
             className='text-[#3d7d7d] hover:text-[#2a5a5a] dark:hover:text-[#4a9a9a] font-medium transition-colors duration-200 underline'
