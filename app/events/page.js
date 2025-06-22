@@ -321,7 +321,7 @@ export default function Events() {
                 <p className="text-gray-600">Loading your events...</p>
               </div>
             ) : userRegisteredEvents.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {userRegisteredEvents.map(event => {
                   const eventDate = event.date instanceof Date ? event.date : new Date(event.date);
                   const formattedDate = eventDate.toLocaleDateString('en-US', {
@@ -332,46 +332,46 @@ export default function Events() {
                   const isUpcoming = eventDate > new Date();
                   
                   return (
-                    <div key={event.id} className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                      <div className="flex items-start justify-between mb-4">
+                    <div key={event.id} className="bg-white rounded-lg shadow-md border border-gray-200 p-4 sm:p-6 hover:shadow-lg transition-shadow">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-[#387d8a] mb-2 line-clamp-2">
+                          <h3 className="text-base sm:text-lg font-semibold text-[#387d8a] mb-2 line-clamp-2">
                             {event.title}
                           </h3>
                           <div className="space-y-2 text-sm text-gray-600">
                             <div className="flex items-center">
-                              <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                              <span>{formattedDate}</span>
+                              <Calendar className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
+                              <span className="line-clamp-1">{formattedDate}</span>
                             </div>
                             <div className="flex items-center">
-                              <Clock className="h-4 w-4 mr-2 text-gray-400" />
-                              <span>{event.time}</span>
+                              <Clock className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
+                              <span className="line-clamp-1">{event.time}</span>
                             </div>
                             <div className="flex items-center">
-                              <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                              <MapPin className="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" />
                               <span className="line-clamp-1">{event.location}</span>
                             </div>
                           </div>
                         </div>
-                        <div className="ml-4 flex-shrink-0">
+                        <div className="flex-shrink-0">
                           <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                             isUpcoming 
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-gray-100 text-gray-800'
                           }`}>
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            {isUpcoming ? 'Upcoming' : 'Past'}
+                            <CheckCircle className="h-3 w-3 mr-1 flex-shrink-0" />
+                            <span className="line-clamp-1">{isUpcoming ? 'Upcoming' : 'Past'}</span>
                           </span>
                         </div>
                       </div>
                       
                       {event.description && (
-                        <p className="text-sm text-gray-700 mb-4 line-clamp-3">
+                        <p className="text-sm text-gray-700 mb-4 line-clamp-3 mt-4">
                           {event.description}
                         </p>
                       )}
                       
-                      <div className="flex items-center justify-between text-xs text-gray-500">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500 gap-2 mt-4">
                         <span>👥 {event.currentParticipants || 0}/{event.maxParticipants || '∞'} participants</span>
                         <span className="capitalize">{event.type || event.category}</span>
                       </div>
@@ -407,30 +407,30 @@ export default function Events() {
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 mx-auto">
                 {/* Calendar Column */}
-                <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
+                <div className="p-4 sm:p-6 rounded-lg shadow-md bg-white border border-gray-200">
                   <div className="flex justify-between items-center mb-6">
-                    <button onClick={() => navigateMonth(-1)} className="text-gray-600 hover:text-[#387d8a]">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button onClick={() => navigateMonth(-1)} className="text-gray-600 hover:text-[#387d8a] p-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    <h3 className="text-lg font-normal text-gray-900">
+                    <h3 className="text-base sm:text-lg font-normal text-gray-900">
                       {monthNames[currentMonth]} {currentYear}
                     </h3>
-                    <button onClick={() => navigateMonth(1)} className="text-gray-600 hover:text-[#387d8a]">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <button onClick={() => navigateMonth(1)} className="text-gray-600 hover:text-[#387d8a] p-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-7 text-center text-sm font-light text-gray-500 mb-4">
+                  <div className="grid grid-cols-7 text-center text-xs sm:text-sm font-light text-gray-500 mb-4">
                     {daysOfWeek.map((day, index) => <div key={index}>{day}</div>)}
                   </div>
 
-                  <div className="grid grid-cols-7 text-center text-base font-normal">
+                  <div className="grid grid-cols-7 text-center text-sm sm:text-base font-normal">
                     {calendarDays.map((day, index) => (
                       <div
                         key={index}
@@ -457,8 +457,8 @@ export default function Events() {
                 </div>
 
                 {/* Events List Column */}
-                <div className="p-6 rounded-lg shadow-md bg-white border border-gray-200">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                <div className="p-4 sm:p-6 rounded-lg shadow-md bg-white border border-gray-200">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">
                     Events for {selectedDate.toDateString()}
                   </h3>
                   <div className="space-y-4">
@@ -475,10 +475,10 @@ export default function Events() {
                         
                         return (
                           <div key={event.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                            <div className="flex gap-4">
+                            <div className="flex flex-col sm:flex-row gap-4">
                               {/* Event Image */}
                               {event.imageUrl ? (
-                                <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                                <div className="relative w-full sm:w-24 h-48 sm:h-24 flex-shrink-0 rounded-lg overflow-hidden">
                                   <Image
                                     src={event.imageUrl}
                                     alt={event.title}
@@ -490,7 +490,7 @@ export default function Events() {
                                   />
                                 </div>
                               ) : (
-                                <div className="relative w-24 h-24 flex-shrink-0 rounded-lg bg-gradient-to-br from-[#387d8a]/10 to-[#2c5f6a]/10 flex items-center justify-center">
+                                <div className="relative w-full sm:w-24 h-48 sm:h-24 flex-shrink-0 rounded-lg bg-gradient-to-br from-[#387d8a]/10 to-[#2c5f6a]/10 flex items-center justify-center">
                                   <svg className="w-8 h-8 text-[#387d8a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                   </svg>
@@ -498,48 +498,59 @@ export default function Events() {
                               )}
                               
                               <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-start">
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                                   <div className="flex-1">
-                                    <h4 className="text-xl font-bold text-[#387d8a] mb-1 line-clamp-1">{event.title}</h4>
-                                    <p className="text-sm text-gray-600 mb-2">
-                                      📅 {formattedDate} | ⏰ {event.time} | 📍 {event.location}
-                                    </p>
-                                    <span className="inline-block mb-2 px-2 py-1 text-xs font-medium bg-[#387d8a]/10 text-[#387d8a] rounded-full">
+                                    <h4 className="text-lg sm:text-xl font-bold text-[#387d8a] mb-2 line-clamp-1">{event.title}</h4>
+                                    <div className="space-y-1 mb-3">
+                                      <p className="text-sm text-gray-600 flex items-center">
+                                        <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                                        <span>{formattedDate}</span>
+                                      </p>
+                                      <p className="text-sm text-gray-600 flex items-center">
+                                        <Clock className="h-4 w-4 mr-2 text-gray-400" />
+                                        <span>{event.time}</span>
+                                      </p>
+                                      <p className="text-sm text-gray-600 flex items-center">
+                                        <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                                        <span className="line-clamp-1">{event.location}</span>
+                                      </p>
+                                    </div>
+                                    <span className="inline-block mb-3 px-3 py-1 text-xs font-medium bg-[#387d8a]/10 text-[#387d8a] rounded-full">
                                       {event.category}
                                     </span>
-                                    <p className="text-sm text-gray-500 mb-2">
+                                    <p className="text-sm text-gray-500 mb-3">
                                       👥 {event.currentParticipants || 0}/{event.maxParticipants || '∞'} participants
                                     </p>
                                     {event.description && (
-                                      <p className="text-base text-gray-700 whitespace-pre-wrap line-clamp-2">{event.description}</p>
+                                      <p className="text-sm sm:text-base text-gray-700 whitespace-pre-wrap line-clamp-2">{event.description}</p>
                                     )}
                                   </div>
-                                  <div className="ml-4 flex-shrink-0">
+                                  <div className="flex-shrink-0 w-full sm:w-auto">
                                     {userRegistrations[event.id] ? (
-                                      <span className="px-6 py-2.5 bg-green-600 text-white rounded-lg font-semibold shadow-md text-sm">
+                                      <button className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg font-semibold shadow-md text-sm">
                                         Registered ✓
-                                      </span>
+                                      </button>
                                     ) : !registrationConfirm[event.id] ? (
                                       <button
                                         onClick={() => handleRegisterClick(event.id)}
                                         disabled={registrationLoading[event.id]}
-                                        className="px-6 py-2.5 bg-[#387d8a] text-white rounded-lg font-semibold hover:bg-[#2c5f6a] transition-colors shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full sm:w-auto px-6 py-3 bg-[#387d8a] text-white rounded-lg font-semibold hover:bg-[#2c5f6a] transition-colors shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                       >
                                         {registrationLoading[event.id] ? 'Processing...' : 'Register'}
                                       </button>
                                     ) : (
-                                      <div className="flex flex-col space-y-2">
+                                      <div className="flex flex-col sm:flex-row gap-2">
                                         <button
                                           onClick={() => handleConfirmRegistration(event)}
                                           disabled={registrationLoading[event.id]}
-                                          className="px-6 py-2.5 bg-[#047d8a] hover:bg-[#036570] text-white rounded text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                          className="flex-1 sm:flex-none px-6 py-3 bg-[#047d8a] hover:bg-[#036570] text-white rounded text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                           {registrationLoading[event.id] ? 'Processing...' : 'Confirm'}
                                         </button>
                                         <button
                                           onClick={() => handleCancelRegistration(event.id)}
                                           disabled={registrationLoading[event.id]}
-                                          className="px-6 py-2.5 bg-slate-300 text-white rounded text-xs font-medium hover:bg-slate-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                          className="flex-1 sm:flex-none px-6 py-3 bg-slate-300 text-white rounded text-sm font-medium hover:bg-slate-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                           Cancel
                                         </button>
@@ -576,44 +587,44 @@ export default function Events() {
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12">
                 <div className="text-center">
-                  <div className="bg-[#387d8a]/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <svg className="h-8 w-8 text-[#387d8a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-[#387d8a]/10 rounded-full w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center mx-auto mb-4">
+                    <svg className="h-6 w-6 sm:h-8 sm:w-8 text-[#387d8a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Learn & Grow</h3>
-                  <p className="text-gray-600">Access workshops and coding sessions to enhance your technical skills</p>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Learn & Grow</h3>
+                  <p className="text-sm sm:text-base text-gray-600">Access workshops and coding sessions to enhance your technical skills</p>
                 </div>
                 
                 <div className="text-center">
-                  <div className="bg-[#387d8a]/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <svg className="h-8 w-8 text-[#387d8a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-[#387d8a]/10 rounded-full w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center mx-auto mb-4">
+                    <svg className="h-6 w-6 sm:h-8 sm:w-8 text-[#387d8a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Network</h3>
-                  <p className="text-gray-600">Connect with fellow developers and industry professionals</p>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Network</h3>
+                  <p className="text-sm sm:text-base text-gray-600">Connect with fellow developers and industry professionals</p>
                 </div>
                 
                 <div className="text-center">
-                  <div className="bg-[#387d8a]/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <svg className="h-8 w-8 text-[#387d8a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-[#387d8a]/10 rounded-full w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center mx-auto mb-4">
+                    <svg className="h-6 w-6 sm:h-8 sm:w-8 text-[#387d8a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Stay Updated</h3>
-                  <p className="text-gray-600">Get notified about upcoming events and opportunities</p>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Stay Updated</h3>
+                  <p className="text-sm sm:text-base text-gray-600">Get notified about upcoming events and opportunities</p>
                 </div>
               </div>
               
               <div className="space-y-4">
                 <button
                   onClick={() => window.location.href = '/Login'}
-                  className="inline-flex items-center px-8 py-4 bg-[#387d8a] text-white font-semibold rounded-lg hover:bg-[#2c5f6a] transition-colors shadow-lg text-lg"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-[#387d8a] text-white font-semibold rounded-lg hover:bg-[#2c5f6a] transition-colors shadow-lg text-base sm:text-lg"
                 >
-                  <Plus className="h-5 w-5 mr-2" />
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Join Now
                 </button>
                 <p className="text-sm text-gray-500">

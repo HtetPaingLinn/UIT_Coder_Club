@@ -12,6 +12,7 @@ import { CardContainer, CardBody, CardItem } from '@/components/ui/3d-card';
 import { BackgroundBeamsWithCollision } from '@/components/ui/background-beams-with-collision';
 import { getAllEvents, getAllWorkshops } from '@/firebase/utils';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const monstserrat = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
@@ -231,9 +232,11 @@ export default function Dashboard() {
               <p className="text-xl text-gray-600 mb-8">
                 Empowering students through code, collaboration, and innovation
               </p>
-              <button className="btn btn-primary">
-                Check Events
-              </button>
+              <Link href="/events">
+                <button className="btn btn-primary">
+                  Check Events
+                </button>
+              </Link>
             </div>
           </div>
         </BackgroundBeamsWithCollision>
