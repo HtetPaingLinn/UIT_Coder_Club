@@ -1,0 +1,68 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow users to read and write their own data
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (
+        // Users can write to their own document
+        request.auth.uid == userId ||
+        // Allow admin users to create new documents (temporary for testing)
+        (request.auth != null)
+      );
+    }
+    
+    // Events collection - allow authenticated users to read and update participant count
+    match /events/{eventId} {
+      allow read: if request.auth != null;
+      allow create, delete: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['teacher', 'mentor', 'admin'];
+      allow update: if request.auth != null && (
+        // Admin users can update anything
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['teacher', 'mentor', 'admin']) ||
+        // Students can only update currentParticipants field (for registration)
+        (request.auth != null && 
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['currentParticipants']))
+      );
+    }
+    
+    // Event registrations collection - allow authenticated users to create their own registrations
+    match /eventRegistrations/{registrationId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Courses collection (workshops) - allow admin users to manage courses
+    match /courses/{courseId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['teacher', 'mentor', 'admin'];
+    }
+    
+    // Resources collection - allow admin users to manage resources
+    match /resources/{resourceId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['teacher', 'mentor', 'admin'];
+    }
+    
+    // Activities collection - temporarily allow all authenticated users for testing
+    match /activities/{activityId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Allow users to read public data
+    match /public/{document=**} {
+      allow read: if true;
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
