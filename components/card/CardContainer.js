@@ -6,7 +6,7 @@ import { toPng } from 'html-to-image';
 import Cardback from './CardBack';
 import Cardfront from './CardFront';
 import { motion } from 'framer-motion';
-import { Download, Link as LinkIcon } from 'lucide-react';
+import { Download, Link as LinkIcon, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { DotGothic16 } from 'next/font/google';
 
@@ -83,10 +83,17 @@ export default function CardContainer({ userData }) {
   };
 
   return (
-    <div className='w-full bg-transparent flex justify-center'>
+    <div className='w-full bg-amber-50 h-screen flex items-center justify-center'>
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-6 left-6 flex items-center gap-2 px-4 py-2 bg-transparent text-black cursor-pointer"
+      >
+        <ArrowLeft className="w-8 h-8" />
+      </button>
       <div className="flex flex-col items-center">
         <div ref={cardRef}
-          className="relative w-[530px] h-[325px] [perspective:2000px] max-sm:w-[320px] max-sm:h-[183px]"
+          className="relative w-[530px] h-[325px] [perspective:2000px] max-sm:w-[298px] max-sm:h-[183px]"
         >
           <motion.div
             animate={{ rotateY: isFlipped ? 180 : 0 }}
@@ -103,10 +110,10 @@ export default function CardContainer({ userData }) {
         </div>
 
         {/* Drag and Tilt Text */}
-        {/* <p className={`mt-8 max-sm:-mt-4 max-sm:text-sm text-md font-medium text-gray-700 ${dotGothic16.className}`}>[Drag and Tilt the Card]</p> */}
+        <p className={`mt-8 max-sm:-mt-4 max-sm:text-sm text-md font-medium text-gray-700 ${dotGothic16.className}`}>[Drag and Tilt the Card]</p>
 
         {/* Buttons section */}
-        {/* <div className="flex flex-wrap justify-center gap-4 max-sm:mt-8 mt-8">
+        <div className="flex flex-wrap justify-center gap-4 max-sm:mt-8 mt-8">
           
           <div className="flex items-center gap-3 flex-wrap">
             <button
@@ -140,13 +147,13 @@ export default function CardContainer({ userData }) {
           </div>
 
           <div className="flex gap-4">
-            <button
+            {/* <button
               onClick={downloadBothSides}
               className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
             >
               <Download className="w-5 h-5" />
               Download
-            </button>
+            </button> */}
 
             <button
               onClick={() => setIsFlipped((prev) => !prev)}
@@ -155,7 +162,7 @@ export default function CardContainer({ userData }) {
               Flip Card
             </button>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );
