@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getFirestore, collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, sendPasswordResetEmail, deleteUser } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -98,22 +98,7 @@ export default function UsersPage() {
     }
   }, [authLoading, currentUser, userDataObj, router]);
 
-  const fetchMentors = async () => {
-    try {
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('role', '==', 'mentor'));
-      const querySnapshot = await getDocs(q);
-      const mentorsList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setMentors(mentorsList);
-    } catch (err) {
-      setError('Failed to fetch mentors: ' + err.message);
-    }
-  };
-
-  const fetchStudentList = async () => {
+  const fetchStudentList = useCallback(async () => {
     try {
       const usersRef = collection(db, 'users');
       const q = query(usersRef, where('role', '==', 'student'));
@@ -126,7 +111,27 @@ export default function UsersPage() {
     } catch (error) {
       console.error('Error fetching student list:', error);
     }
-  };
+  }, [db]);
+
+  const fetchMentors = useCallback(async () => {
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('role', '==', 'mentor'));
+      const querySnapshot = await getDocs(q);
+      const mentorsList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setMentors(mentorsList);
+    } catch (err) {
+      console.error('Error fetching mentors:', err);
+    }
+  }, [db]);
+
+  useEffect(() => {
+    fetchStudentList();
+    fetchMentors();
+  }, [fetchStudentList, fetchMentors]);
 
   const handleAddMentor = async (e) => {
     e.preventDefault();

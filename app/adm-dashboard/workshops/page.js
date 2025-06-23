@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Loading from '@/components/Loading';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -160,17 +160,11 @@ export default function CoursesPage() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [auth, db, router]);
 
-  // Fetch courses
-  useEffect(() => {
-    if (!showLoading) {
-      fetchCourses();
-    }
-  }, [showLoading]);
-
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     try {
+      setShowLoading(true);
       const coursesRef = collection(db, 'courses');
       const q = query(coursesRef, orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
@@ -181,8 +175,14 @@ export default function CoursesPage() {
       setCourses(coursesList);
     } catch (error) {
       console.error('Error fetching courses:', error);
+    } finally {
+      setShowLoading(false);
     }
-  };
+  }, [db]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

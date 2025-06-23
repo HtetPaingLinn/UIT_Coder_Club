@@ -11,6 +11,7 @@ export default function DashboardPage() {
     const db = getFirestore();
     const [debug, setDebug] = useState('');
     const hasCheckedRole = useRef(false);
+    const [showLoading, setShowLoading] = useState(true);
 
     useEffect(() => {
         const checkUserRole = async () => {
@@ -82,9 +83,29 @@ export default function DashboardPage() {
         if (!loading && currentUser && !hasCheckedRole.current) {
             checkUserRole();
         }
-    }, [currentUser, loading]); // Removed router and db from dependencies
 
-    // Return loading state with debug information
+        if (!loading) {
+            if (!currentUser) {
+                router.push('/Login');
+                return;
+            }
+            setShowLoading(false);
+        }
+    }, [currentUser, loading, router, db]);
+
+    if (showLoading) {
+        return (
+            <Main>
+                <div className="flex flex-col items-center justify-center min-h-screen">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    <pre className="mt-4 text-sm text-gray-600">
+                        {debug}
+                    </pre>
+                </div>
+            </Main>
+        );
+    }
+
     return (
         <Main>
             <div className="flex flex-col items-center justify-center min-h-screen">

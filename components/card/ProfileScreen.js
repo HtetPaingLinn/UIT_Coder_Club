@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 // import PreviewCardfront from '../components/PreviewCardfront';
 // import PreviewCardback from '../components/PreviewCardback';
 // import Cardback from '@/components/Cardback';
@@ -73,7 +73,7 @@ export default function ProfileScreen() {
   };
 
   // Major options logic (copied from setup)
-  const getAvailableMajors = () => {
+  const getAvailableMajors = useCallback(() => {
     const yearLevel = parseInt(enrolledYear);
     if (!yearLevel) return [];
     if (yearLevel === 1 || yearLevel === 2) return [];
@@ -82,7 +82,7 @@ export default function ProfileScreen() {
       return ['Software Engineering (SE)', 'Business Information Systems (BIS)', 'Knowledge Engineering (KE)', 'High Performance Computing (HPC)', 'Embedded Systems (ES)', 'Computer Networks (CN)', 'Cyber Security (CSec)'];
     }
     return [];
-  };
+  }, [enrolledYear]);
 
   // Reset major when year changes, but only if not in available majors
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function ProfileScreen() {
       setMajor('');
     }
     // else, keep the current major
-  }, [enrolledYear]);
+  }, [getAvailableMajors, major]);
 
   // Track if any field has changed, including profile image
   const hasChanges =

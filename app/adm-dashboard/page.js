@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Loading from '@/components/Loading';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
   };
 
   // Function to fetch real-time activities from all collections
-  const fetchRealTimeActivities = async () => {
+  const fetchRealTimeActivities = useCallback(async () => {
     try {
       // Check if user is still authenticated before making Firestore calls
       if (!currentUser) {
@@ -189,7 +189,7 @@ export default function AdminDashboard() {
         setActivities([]);
       }
     }
-  };
+  }, [currentUser]);
 
   // Real-time activities listener for all collections
   useEffect(() => {
@@ -319,7 +319,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const fetchUserCount = async () => {
+  const fetchUserCount = useCallback(async () => {
     try {
       // Check if user is still authenticated before making Firestore calls
       if (!currentUser) {
@@ -345,9 +345,9 @@ export default function AdminDashboard() {
         setUserGrowth(0);
       }
     }
-  };
+  }, [currentUser]);
 
-  const fetchMentorCount = async () => {
+  const fetchMentorCount = useCallback(async () => {
     try {
       // Check if user is still authenticated before making Firestore calls
       if (!currentUser) {
@@ -372,9 +372,9 @@ export default function AdminDashboard() {
         setMentorGrowth(0);
       }
     }
-  };
+  }, [currentUser]);
 
-  const fetchWorkshopCount = async () => {
+  const fetchWorkshopCount = useCallback(async () => {
     try {
       // Check if user is still authenticated before making Firestore calls
       if (!currentUser) {
@@ -410,9 +410,9 @@ export default function AdminDashboard() {
         setWorkshopGrowth(0);
       }
     }
-  };
+  }, [currentUser]);
 
-  const fetchEventCount = async () => {
+  const fetchEventCount = useCallback(async () => {
     try {
       // Check if user is still authenticated before making Firestore calls
       if (!currentUser) {
@@ -448,9 +448,9 @@ export default function AdminDashboard() {
         setEventGrowth(0);
       }
     }
-  };
+  }, [currentUser]);
 
-  const fetchStudentList = async () => {
+  const fetchStudentList = useCallback(async () => {
     try {
       // Check if user is still authenticated before making Firestore calls
       if (!currentUser) {
@@ -473,7 +473,7 @@ export default function AdminDashboard() {
         setStudentList([]);
       }
     }
-  };
+  }, [currentUser]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -537,7 +537,6 @@ export default function AdminDashboard() {
   }, [showLoading, currentUser, router]);
 
   useEffect(() => {
-    // Fetch counts and lists
     fetchUserCount();
     fetchEventCount();
     fetchWorkshopCount();

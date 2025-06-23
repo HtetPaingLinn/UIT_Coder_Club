@@ -27,7 +27,7 @@ export default function Dashboard() {
       if (userDataObj && JSON.stringify(userDataObj) !== JSON.stringify(data)) {
         setData(userDataObj);
       }
-    }, [userDataObj]);
+    }, [userDataObj, data]);
     
     // Handle redirect after loading is complete
     useEffect(() => {

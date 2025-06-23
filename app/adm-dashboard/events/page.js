@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Loading from '@/components/Loading';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -369,25 +369,28 @@ export default function EventsPage() {
     return () => unsubscribe();
   }, [auth, db, router]);
 
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
-
   // Function to fetch events from Firestore
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
-      const eventsRef = collection(db, 'events');
-      const q = query(eventsRef, orderBy('date', 'desc'));
+      setShowLoading(true);
+      const eventsCollection = collection(db, 'events');
+      const q = query(eventsCollection, orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
       const eventsList = [];
       querySnapshot.forEach(doc => {
         eventsList.push({ id: doc.id, ...doc.data() });
       });
       setEvents(eventsList);
-    } catch (error) {
-      console.error('Error fetching events:', error);
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+    } finally {
+      setShowLoading(false);
     }
-  };
+  }, [db]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

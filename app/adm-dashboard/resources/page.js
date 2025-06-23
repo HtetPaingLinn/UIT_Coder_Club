@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Loading from '@/components/Loading';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -76,14 +76,7 @@ export default function ResourcesPage() {
     return () => unsubscribe();
   }, [auth, db, router]);
 
-  // Fetch resources
-  useEffect(() => {
-    if (!showLoading) {
-      fetchResources();
-    }
-  }, [showLoading]);
-
-  const fetchResources = async () => {
+  const fetchResources = useCallback(async () => {
     setShowLoading(true);
     try {
       const resourcesRef = collection(db, 'resources');
@@ -99,7 +92,11 @@ export default function ResourcesPage() {
     } finally {
       setShowLoading(false);
     }
-  };
+  }, [db]);
+
+  useEffect(() => {
+    fetchResources();
+  }, [fetchResources]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

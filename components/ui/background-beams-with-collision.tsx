@@ -229,6 +229,10 @@ const CollisionMechanism = React.forwardRef<
   });
   const [beamKey, setBeamKey] = useState(0);
   const [cycleCollisionDetected, setCycleCollisionDetected] = useState(false);
+  const [boundary, setBoundary] = useState({
+    width: 0,
+    height: 0,
+  });
 
   useEffect(() => {
     const checkCollision = () => {
@@ -276,6 +280,24 @@ const CollisionMechanism = React.forwardRef<
       }, 2000);
     }
   }, [collision]);
+
+  useEffect(() => {
+    if (parentRef.current) {
+      setBoundary({
+        width: parentRef.current.offsetWidth,
+        height: parentRef.current.offsetHeight,
+      });
+    }
+  }, [parentRef]);
+
+  const handleResize = () => {
+    if (parentRef.current) {
+      setBoundary({
+        width: parentRef.current.offsetWidth,
+        height: parentRef.current.offsetHeight,
+      });
+    }
+  };
 
   return (
     <>

@@ -248,7 +248,7 @@ export default function Page() {
             {/* Left Form Section - Adjusted width */}
             <div className="flex-1 flex flex-col px-16 max-sm:px-8 py-12 lg:w-1/2">
                 <div className="w-full space-y-6 mb-8">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Nice to meet you! Let's get acquainted.</h1>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Nice to meet you! Let&apos;s get acquainted.</h1>
                     
                     {/* appears on phone screen */}
                     <div className="lg:hidden">
