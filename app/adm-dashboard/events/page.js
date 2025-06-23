@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Loading from '@/components/Loading';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -14,7 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Calendar, Plus, Edit, Trash2, Users, MapPin, Clock, CalendarDays, X, Upload, Image as ImageIcon, AlertCircle, Database, Menu } from 'lucide-react';
 import Image from "next/image";
 import { Montserrat } from 'next/font/google';
-import { createSampleEvents, createSampleEventsWithImages } from '@/firebase/utils';
+import { createSampleEvents, createSampleEventsWithImages, getEventParticipants } from '@/firebase/utils';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ['500'] });
 
@@ -42,6 +43,10 @@ export default function EventsPage() {
   const auth = getAuth();
   const db = getFirestore();
   const storage = getStorage();
+  const [participantsModalOpen, setParticipantsModalOpen] = useState(false);
+  const [participants, setParticipants] = useState([]);
+  const [participantsLoading, setParticipantsLoading] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Function to check if current time is after 2pm
   const isAfter2PM = () => {
@@ -97,7 +102,7 @@ export default function EventsPage() {
       today.setHours(0, 0, 0, 0);
       
       if (selectedDate.getTime() === today.getTime() && isAfter2PM()) {
-        newErrors.date = "Today&apos;s date cannot be used after 2:00 PM. Please select tomorrow or a later date.";
+        newErrors.date = "Today's date cannot be used after 2:00 PM. Please select tomorrow or a later date.";
       }
     }
 
@@ -141,7 +146,7 @@ export default function EventsPage() {
       today.setHours(0, 0, 0, 0);
       
       if (selectedDate.getTime() === today.getTime() && isAfter2PM()) {
-        setErrors(prev => ({ ...prev, date: "Today&apos;s date cannot be used after 2:00 PM. Please select tomorrow or a later date." }));
+        setErrors(prev => ({ ...prev, date: "Today's date cannot be used after 2:00 PM. Please select tomorrow or a later date." }));
       } else {
         setErrors(prev => ({ ...prev, date: '' }));
       }
@@ -365,32 +370,30 @@ export default function EventsPage() {
       }
     });
 
-    // Cleanup subscription on component unmount
     return () => unsubscribe();
-  }, [auth, db, router]);
+  }, []);
 
-  // Function to fetch events from Firestore
-  const fetchEvents = useCallback(async () => {
+  // Fetch events
+  useEffect(() => {
+    if (!showLoading) {
+      fetchEvents();
+    }
+  }, [showLoading]);
+
+  const fetchEvents = async () => {
     try {
-      setShowLoading(true);
-      const eventsCollection = collection(db, 'events');
-      const q = query(eventsCollection, orderBy('date', 'desc'));
+      const eventsRef = collection(db, 'events');
+      const q = query(eventsRef, orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
       const eventsList = [];
       querySnapshot.forEach(doc => {
         eventsList.push({ id: doc.id, ...doc.data() });
       });
       setEvents(eventsList);
-    } catch (err) {
-      console.error("Failed to fetch events:", err);
-    } finally {
-      setShowLoading(false);
+    } catch (error) {
+      console.error('Error fetching events:', error);
     }
-  }, [db]);
-
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -524,6 +527,20 @@ export default function EventsPage() {
       category: 'competition'
     });
     setImagePreview(null);
+  };
+
+  const handleCheckParticipants = async (event) => {
+    setSelectedEvent(event);
+    setParticipantsModalOpen(true);
+    setParticipantsLoading(true);
+    try {
+      const data = await getEventParticipants(event.id);
+      setParticipants(data);
+    } catch (error) {
+      setParticipants([]);
+    } finally {
+      setParticipantsLoading(false);
+    }
   };
 
   if (showLoading) {
@@ -927,6 +944,15 @@ export default function EventsPage() {
                       <span className="truncate text-xs">Max: {event.maxParticipants} participants</span>
                     </div>
                   </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleCheckParticipants(event)}
+                    className="mt-4 w-full text-teal-700 border-teal-600 hover:bg-teal-50 flex items-center justify-center"
+                  >
+                    <Users className="h-4 w-4 mr-1" />
+                    Check Participants
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -945,6 +971,71 @@ export default function EventsPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Participants Modal */}
+          <Sheet open={participantsModalOpen} onOpenChange={setParticipantsModalOpen}>
+            <SheetContent side="right" className="max-w-md w-full p-0 flex flex-col">
+              <div className="flex items-center justify-between px-6 pt-6 pb-2 border-b border-gray-200 dark:border-gray-700">
+                <div>
+                  <SheetTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                    Participants for {selectedEvent?.title || ''}
+                  </SheetTitle>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {participants.length} participant{participants.length !== 1 ? 's' : ''}
+                  </div>
+                </div>
+                <SheetClose asChild>
+                  <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                    <X className="h-5 w-5" />
+                  </Button>
+                </SheetClose>
+              </div>
+              <div className="flex-1 overflow-y-auto px-6 py-4">
+                {participantsLoading ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-center text-gray-500">
+                    <svg className="animate-spin h-8 w-8 mb-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+                    Loading participants...
+                  </div>
+                ) : participants.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-center text-gray-400">
+                    <Users className="h-10 w-10 mb-2" />
+                    <div className="font-medium">No participants registered.</div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {participants.map((user) => (
+                      <div key={user.uid} className="flex items-center bg-gray-50 dark:bg-slate-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+                        {/* Avatar */}
+                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg mr-4 overflow-hidden">
+                          {user.photoURL ? (
+                            <img src={user.photoURL} alt={user.name || user.email} className="w-12 h-12 rounded-full object-cover" />
+                          ) : (
+                            (user.name || user.email || '?')
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')
+                              .toUpperCase()
+                              .slice(0, 2)
+                          )}
+                        </div>
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-gray-900 dark:text-white truncate">{user.name || user.email}</div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400 truncate">{user.email}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Role: {user.role}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="px-6 pb-6 pt-2 border-t border-gray-200 dark:border-gray-700">
+                <SheetClose asChild>
+                  <Button className="w-full" variant="outline">Close</Button>
+                </SheetClose>
+              </div>
+            </SheetContent>
+          </Sheet>
         </main>
       </div>
     </div>

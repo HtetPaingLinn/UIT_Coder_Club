@@ -74,7 +74,7 @@ export default function Login(props) {
     <div className='flex flex-col flex-1 justify-center items-center gap-4 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 '>
       <div className='w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto'>
         <h3 className={`${fugaz.className} font-fugaz text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-center text-gray-900 dark:text-white mb-6 sm:mb-8 md:mb-10 leading-tight`}>
-          {isRegister ? 'Register' : 'Login'}
+          {isRegister ? 'Sign up' : 'Login'}
         </h3>
 
         {/* Error Message Display */}
