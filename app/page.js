@@ -46,7 +46,7 @@ const latestAnnouncements = [
     description: 'Join our annual hackathon and showcase your coding skills!',
     date: 'August 2025',
     type: 'Event',
-    image: 'https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?q=80&w=500&auto=format&fit=crop'
+    image: '/HackathonImage.jpg'
   },
   {
     id: 2,

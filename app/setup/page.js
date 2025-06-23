@@ -3,9 +3,24 @@ import React, { useState, useEffect } from 'react';
 import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import CardContainer from '@/components/card/CardContainer';
+import Image from 'next/image';
+// import CardContainer from '@/components/card/CardContainer';
+import { DotGothic16, Geist_Mono } from 'next/font/google';
+// import Profile from  '../../assets/img/profile.jpg';
+import Marquee from '@/components/card/Marquee';
+import ImageUpload from '@/components/ImageUpload';
 import { useIsMobile } from '@/hooks/use-mobile';
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const dotGothic16 = DotGothic16({
+  variable: "--font-dot-gothic-16",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export default function Page() {
   const [studentId, setStudentId] = useState('');
@@ -20,66 +35,14 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [showVerification, setShowVerification] = useState(true);
   const [selectedProfile, setSelectedProfile] = useState(1);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [profileImage, setProfileImage] = useState('/boy.jpeg');
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  const [screenSize, setScreenSize] = useState('desktop');
   const isMobile = useIsMobile();
   
   const router = useRouter();
   const auth = getAuth();
   const db = getFirestore();
-  const { currentUser, userDataObj, loading: authLoading } = useAuth();
-
-  // Determine screen size for better responsive handling
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        setScreenSize('mobile');
-      } else if (width < 1024) {
-        setScreenSize('tablet');
-      } else {
-        setScreenSize('desktop');
-      }
-    };
-
-    handleResize(); // Set initial size
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Authentication and user data validation
-  useEffect(() => {
-    if (authLoading) {
-      // Still loading auth state, wait
-      return;
-    }
-
-    if (!currentUser) {
-      // User not authenticated, redirect to login
-      router.push('/Login');
-      return;
-    }
-
-    // User is authenticated, check user data
-    if (userDataObj) {
-      // Check if user has role and setup is completed
-      if (userDataObj.role && userDataObj.role.trim() !== '' && userDataObj.setupCompleted) {
-        // User has role and setup is completed, redirect to appropriate dashboard
-        if (userDataObj.role === 'admin') {
-          router.push('/adm-dashboard');
-        } else {
-          router.push('/user-dashboard');
-        }
-        return;
-      }
-    }
-
-    // User is authenticated but needs setup (no role or setup not completed)
-    setIsCheckingAuth(false);
-  }, [currentUser, userDataObj, authLoading, router]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -118,6 +81,7 @@ export default function Page() {
         yearLevel: enrolledYear,
         semester: graduationYear,
         attendanceStatus,
+        profileImage: uploadedImageUrl || profileImage,
         setupCompleted: true
       });
 
@@ -168,23 +132,99 @@ export default function Page() {
   // Create an object with the form data
   const userData = {
     name: name || "Mr. Student",
-    studentId: studentId || "8888",
+    studentId: studentId || "0404",
     yearLevel: enrolledYear || "1",
     semester: graduationYear || "1",
     major: major || "COMP.SCI"
   };
 
-  // Show loading while checking authentication
-  if (authLoading || isCheckingAuth) {
-    return (
-      <div className="flex min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-lg">Loading...</p>
+  // Handle image upload
+  const handleImageUpload = (imageUrl) => {
+    setUploadedImageUrl(imageUrl);
+    setProfileImage(imageUrl);
+  };
+
+  // Function to format year and semester display
+  const formatYearSemester = (year, semester) => {
+    if (!year || !semester) return "1ST I";
+    
+    const yearMap = {
+      '1': '1ST',
+      '2': '2ND', 
+      '3': '3RD',
+      '4': '4TH',
+      '5': '5TH'
+    };
+    
+    // Calculate semester number: (year-1) * 2 + term
+    const semesterNumber = (parseInt(year) - 1) * 2 + parseInt(semester);
+    
+    // Convert to Roman numerals
+    const romanNumerals = {
+      1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 
+      6: 'VI', 7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X'
+    };
+    
+    return `${yearMap[year] || '1ST'} ${romanNumerals[semesterNumber] || 'I'}`;
+  };
+
+  const CardPreview = () => (
+    <div className="flex items-start justify-center">
+      <div className="w-full lg:w-full flex flex-col justify-center items-center gap-4 p-4 pb-0 max-sm:pt-18">
+        <div
+          style={{ perspective: 2000 }}
+          className={`${dotGothic16.className}`}
+        >
+          <div className="max-sm:bottom-12 flex justify-center items-center max-sm:w-[298px] w-[530px] max-sm:h-[183px] h-[325px] bg-[#FEC590] max-sm:rounded-[15px] rounded-[18px] max-sm:border-[1.5px] border-[2px] border-black max-sm:pl-[19px] pl-[33px] max-sm:pr-[27px] pr-[48px] max-sm:pt-[23px] pt-[42px] max-sm:pb-[31px] pb-[56px] relative text-black">
+            <div 
+              className="flex flex-col max-sm:rounded-[8px] rounded-[10px] overflow-hidden max-sm:border-[1.5px] border-2 border-black items-center justify-center max-sm:w-1/3 w-2/5"
+            >
+              <div className="max-sm:w-[90px] w-[172px] max-sm:h-[120px] h-[228px] overflow-hidden relative group">
+                <Image src={profileImage} alt="Student Photo" draggable="false" fill className="object-cover" />
+                
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover:bg-black/20 group-hover:backdrop-blur-sm">
+                  <ImageUpload onImageUpload={handleImageUpload} onUploadStateChange={setIsUploading} />
+                </div>
+
+                {isUploading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                      <span className={`${dotGothic16.className} text-white font-semibold animate-pulse`}>Uploading...</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-center w-2/3 max-sm:pl-5 pl-8">
+              <h1 className={`${dotGothic16.className} max-sm:text-[28px] max-sm:font-bold max-sm:text-gray-900 text-[49px] text-nowrap flex items-center mb-[4px]`}>Student ID</h1>
+              <div className="w-full border-t-[2px] border-dashed border-black max-sm:my-2 my-5" />
+
+              <div className="grid grid-cols-2 gap-4 max-sm:text-[15px] text-[20px]">
+                <div className="flex flex-col justify-between max-w-[200px]">
+                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>
+                    Name
+                  </span>
+                  <Marquee>{userData.name}</Marquee>
+                </div>
+
+                <div className="flex flex-col justify-between">
+                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Roll No.</span>
+                  <Marquee>{`TNT ${userData.studentId}`}</Marquee>
+                </div>
+                <div className="flex flex-col justify-between">
+                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Year</span>
+                  <Marquee>{formatYearSemester(userData.yearLevel, userData.semester)}</Marquee>
+                </div>
+                <div className="flex flex-col justify-between">
+                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Major</span>
+                  <Marquee>{userData.major}</Marquee>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <> 
@@ -198,201 +238,20 @@ export default function Page() {
               <p className="ml-3 text-white/75 text-lg">Your email is now verified!</p>
           </div>
         )}
-        <div className="flex min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
             
-            {/* Mobile Layout */}
-            {screenSize === 'mobile' ? (
-              <div className="flex-1 flex flex-col px-6 py-6">
-                <div className="w-full">
-                    <h1 className="text-2xl sm:text-3xl font-bold dark:text-white mb-8">Nice to meet you! Let&apos;s get acquainted.</h1>
+            {/* Left Form Section - Adjusted width */}
+            <div className="flex-1 flex flex-col px-16 max-sm:px-8 py-12 lg:w-1/2">
+                <div className="w-full space-y-6 mb-8">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Nice to meet you! Let's get acquainted.</h1>
                     
-                    {/* Card for mobile - placed below heading with proper spacing */}
-                    <div className="flex justify-center mb-8">
-                        <div className="w-full h-[220px]">
-                            <CardContainer userData={userData} />
-                        </div>
+                    {/* appears on phone screen */}
+                    <div className="lg:hidden">
+                      <CardPreview />
                     </div>
-                    
+
                     {error && (
-                      <div className="bg-red-500/20 text-red-200 p-4 rounded-md mb-6">
-                        {error}
-                      </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium mb-2">Name <span className="text-red-500">*</span></label>
-                            <input type="text" id="name" required
-                                placeholder="First and Last Name"
-                                className="w-full px-4 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                        </div>
-
-                        {/* Additional Form Fields */}
-                        <div>
-                            <label htmlFor="studentId" className="block text-sm font-medium mb-2">Student Id <span className="text-red-500">*</span></label>
-                            <div className="relative">
-                                <span className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 pr-2">TNT -</span>
-                                <input 
-                                    type="text" 
-                                    id="studentId" 
-                                    value={studentId}
-                                    onChange={(e) => {
-                                        // Only allow numbers
-                                        const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                                        setStudentId(numericValue);
-                                    }}
-                                    className="w-full px-8 py-3 pl-20 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter your ID number"
-                                    maxLength={4}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Year and Semester Selection */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label htmlFor="yearLevel" className="block text-sm font-medium mb-2">
-                                    Year Level <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="yearLevel"
-                                    value={enrolledYear}
-                                    onChange={(e) => setEnrolledYear(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                                >
-                                    <option value="">Select year</option>
-                                    <option value="1">First Year</option>
-                                    <option value="2">Second Year</option>
-                                    <option value="3">Third Year</option>
-                                    <option value="4">Fourth Year</option>
-                                    <option value="5">Fifth Year</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label htmlFor="semester" className="block text-sm font-medium mb-2">
-                                    Semester <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="semester"
-                                    value={graduationYear}
-                                    onChange={(e) => setGraduationYear(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                                >
-                                    <option value="">Select semester</option>
-                                    <option value="1">First Semester</option>
-                                    <option value="2">Second Semester</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label htmlFor="major" className="block text-sm font-medium mb-2">Major <span className="text-red-500">*</span></label>
-                            <select 
-                                id="major" 
-                                value={major} 
-                                onChange={(e) => setMajor(e.target.value)}
-                                className="w-full px-4 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                                disabled={!enrolledYear || parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' : false}
-                            >
-                                <option value="">
-                                    {!enrolledYear ? 'Select a major' : 
-                                     parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' :
-                                     'Select a major'}
-                                </option>
-                                {getAvailableMajors().map((option) => (
-                                    <option key={option} value={option}>{option}</option>
-                                ))}
-                            </select>
-                        </div>
-                        
-
-                        <div>
-                            <label htmlFor="role" className="block text-sm font-medium mb-3">Roles <span className="text-red-500">*</span></label>
-                            <div className='flex flex-wrap gap-3'>
-                                {[
-                                    { id: 'student', label: 'Student', gradient: 'from-purple-600 to-blue-500', disabled: false },
-                                    { id: 'mentor', label: 'Mentor', gradient: 'from-cyan-500 to-blue-500', disabled: true },
-                                    { id: 'teacher', label: 'Teacher', gradient: 'from-green-400 to-blue-600', disabled: true }
-                                ].map((roleOption) => (
-                                    <div key={roleOption.id} className="relative group">
-                                        <button
-                                            type="button"
-                                            onClick={() => !roleOption.disabled && setRole(roleOption.id)}
-                                            className={`relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br ${roleOption.gradient} hover:text-white dark:text-white focus:ring-4 focus:outline-none ${
-                                                role === roleOption.id 
-                                                ? 'ring-2 ring-blue-500' 
-                                                : ''
-                                            } ${roleOption.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                            disabled={roleOption.disabled}
-                                        >
-                                            <span className={`relative px-4 py-2 transition-all ease-in duration-75 rounded-md ${
-                                                role === roleOption.id
-                                                ? 'bg-transparent'
-                                                : 'bg-white dark:bg-gray-900 dark:text-white'
-                                            } group-hover:bg-transparent group-hover:dark:bg-transparent`}>
-                                                {roleOption.label}
-                                            </span>
-                                        </button>
-                                        {roleOption.disabled && (
-                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
-                                                Currently unavailable
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-
-                        {/* Attendance Status Dropdown */}
-                        <div>
-                            <label htmlFor="attendanceStatus" className="block text-sm font-medium mb-2">
-                                Attendance Status <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                id="attendanceStatus"
-                                value={attendanceStatus}
-                                onChange={(e) => setAttendanceStatus(e.target.value)}
-                                className="w-full px-4 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                            >
-                                <option value="">Select status</option>
-                                <option value="attending">Attending</option>
-                                <option value="withdraw">Withdraw</option>
-                                <option value="onLeave">On Leave</option>
-                                <option value="graduated">Graduated</option>
-                            </select>
-                        </div>
-
-                        {/* Submit Button */}
-                        <div className="pt-4">
-                          <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full px-4 py-3 text-white bg-[#047d8a] hover:bg-[#036570] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-base font-medium"
-                          >
-                            {loading ? 'Saving...' : 'Complete Setup'}
-                          </button>
-                        </div>
-                    </form>
-                </div>
-              </div>
-            ) : screenSize === 'tablet' ? (
-              <div className="flex-1 flex flex-col px-8 py-8 max-w-[800px] mx-auto">
-                <div className="w-full space-y-8">
-                    <h1 className="text-3xl font-bold mb-6 dark:text-white">Nice to meet you! Let&apos;s get acquainted.</h1>
-                    
-                    {/* Card for tablet - placed between title and form */}
-                    <div className="flex justify-center mb-8">
-                        <div className="w-full max-w-[500px]">
-                            <CardContainer userData={userData} />
-                        </div>
-                    </div>
-                    
-                    {error && (
-                      <div className="bg-red-500/20 text-red-200 p-4 rounded-md mb-6">
+                      <div className="bg-red-500/20 text-red-200 p-4 rounded-md">
                         {error}
                       </div>
                     )}
@@ -411,7 +270,7 @@ export default function Page() {
                         {/* Additional Form Fields */}
                         <label htmlFor="studentId" className="block text-sm font-medium mb-2">Student Id <span className="text-red-500">*</span></label>
                         <div className="relative">
-                            <span className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 pr-2">TNT -</span>
+                            <span className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400">TNT - </span>
                             <input 
                                 type="text" 
                                 id="studentId" 
@@ -421,7 +280,7 @@ export default function Page() {
                                     const numericValue = e.target.value.replace(/[^0-9]/g, '');
                                     setStudentId(numericValue);
                                 }}
-                                className="w-full px-8 py-3 pl-[72px] rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-5 py-3 pl-20 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Enter your ID number"
                                 maxLength={4}
                             />
@@ -449,7 +308,7 @@ export default function Page() {
                             </div>
                             <div className="flex-1">
                             <label htmlFor="semester" className="block text-sm font-medium mb-2">
-                                Semester <span className="text-red-500">*</span>
+                                Term <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="semester"
@@ -457,9 +316,9 @@ export default function Page() {
                                 onChange={(e) => setGraduationYear(e.target.value)}
                                 className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value="">Select semester</option>
-                                <option value="1">First Semester</option>
-                                <option value="2">Second Semester</option>
+                                <option value="">Select term</option>
+                                <option value="1">First Term</option>
+                                <option value="2">Second Term</option>
                             </select>
                             </div>
                         </div>
@@ -470,7 +329,7 @@ export default function Page() {
                             value={major} 
                             onChange={(e) => setMajor(e.target.value)}
                             className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            disabled={!enrolledYear || parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' : false}
+                            disabled={!enrolledYear || parseInt(enrolledYear) <= 2}
                         >
                             <option value="">
                                 {!enrolledYear ? 'Select a major' : 
@@ -484,7 +343,7 @@ export default function Page() {
                         
 
                         <label htmlFor="role" className="block text-sm font-medium mb-2">Roles <span className="text-red-500">*</span></label>
-                        <div className='flex space-x-5'>
+                        <div className='flex flex-wrap gap-4'>
                             {[
                                 { id: 'student', label: 'Student', gradient: 'from-purple-600 to-blue-500', disabled: false },
                                 { id: 'mentor', label: 'Mentor', gradient: 'from-cyan-500 to-blue-500', disabled: true },
@@ -501,10 +360,10 @@ export default function Page() {
                                         } ${roleOption.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         disabled={roleOption.disabled}
                                     >
-                                        <span className={`relative px-8 py-1.5 transition-all ease-in duration-75 rounded-md ${
+                                        <span className={`relative px-8 py-3 transition-all ease-in duration-75 rounded-md ${
                                             role === roleOption.id
-                                            ? 'bg-transparent text-white'
-                                            : 'bg-white hover:text-white dark:bg-gray-900 dark:text-white'
+                                            ? 'bg-transparent'
+                                            : 'bg-white dark:bg-gray-900'
                                         } group-hover:bg-transparent group-hover:dark:bg-transparent`}>
                                             {roleOption.label}
                                         </span>
@@ -541,192 +400,20 @@ export default function Page() {
                           <button
                             type="submit"
                             disabled={loading}
-                            className="w-full px-5 py-3 text-white bg-[#047d8a] hover:bg-[#036570] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full px-5 py-3 text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {loading ? 'Saving...' : 'Complete Setup'}
                           </button>
                         </div>
                     </form>
                 </div>
-              </div>
-            ) : (
-              <>
-                {/* Desktop Layout - Left Form Section */}
-                <div className="flex-1 flex flex-col px-16 py-12 max-w-[800px]">
-                    <div className="w-full space-y-6 mb-8">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 dark:text-white">Nice to meet you! Let&apos;s get acquainted.</h1>
-                        
-                        {error && (
-                          <div className="bg-red-500/20 text-red-200 p-4 rounded-md">
-                            {error}
-                          </div>
-                        )}
+            </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div>
-                                <label htmlFor="name" className="block text-sm font-medium mb-2">Name <span className="text-red-500">*</span></label>
-                                <input type="text" id="name" required
-                                    placeholder="First and Last Name"
-                                    className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                            </div>
-
-                            {/* Additional Form Fields */}
-                            <label htmlFor="studentId" className="block text-sm font-medium mb-2">Student Id <span className="text-red-500">*</span></label>
-                            <div className="relative">
-                                <span className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 pr-2">TNT -</span>
-                                <input 
-                                    type="text" 
-                                    id="studentId" 
-                                    value={studentId}
-                                    onChange={(e) => {
-                                        // Only allow numbers
-                                        const numericValue = e.target.value.replace(/[^0-9]/g, '');
-                                        setStudentId(numericValue);
-                                    }}
-                                    className="w-full px-8 py-3 pl-[72px] rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter your ID number"
-                                    maxLength={4}
-                                />
-                            </div>
-
-                            {/* Year and Semester Selection */}
-                            <div className="flex space-x-6">
-                                <div className="flex-1">
-                                <label htmlFor="yearLevel" className="block text-sm font-medium mb-2">
-                                    Year Level <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="yearLevel"
-                                    value={enrolledYear}
-                                    onChange={(e) => setEnrolledYear(e.target.value)}
-                                    className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Select year</option>
-                                    <option value="1">First Year</option>
-                                    <option value="2">Second Year</option>
-                                    <option value="3">Third Year</option>
-                                    <option value="4">Fourth Year</option>
-                                    <option value="5">Fifth Year</option>
-                                </select>
-                                </div>
-                                <div className="flex-1">
-                                <label htmlFor="semester" className="block text-sm font-medium mb-2">
-                                    Semester <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="semester"
-                                    value={graduationYear}
-                                    onChange={(e) => setGraduationYear(e.target.value)}
-                                    className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">Select semester</option>
-                                    <option value="1">First Semester</option>
-                                    <option value="2">Second Semester</option>
-                                </select>
-                                </div>
-                            </div>
-
-                            <label htmlFor="major" className="block text-sm font-medium mb-2">Major <span className="text-red-500">*</span></label>
-                            <select 
-                                id="major" 
-                                value={major} 
-                                onChange={(e) => setMajor(e.target.value)}
-                                className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                disabled={!enrolledYear || parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' : false}
-                            >
-                                <option value="">
-                                    {!enrolledYear ? 'Select a major' : 
-                                     parseInt(enrolledYear) <= 2 ? 'Major selection not available for 1st and 2nd year' :
-                                     'Select a major'}
-                                </option>
-                                {getAvailableMajors().map((option) => (
-                                    <option key={option} value={option}>{option}</option>
-                                ))}
-                            </select>
-                            
-
-                            <label htmlFor="role" className="block text-sm font-medium mb-2">Roles <span className="text-red-500">*</span></label>
-                            <div className='flex space-x-5'>
-                                {[
-                                    { id: 'student', label: 'Student', gradient: 'from-purple-600 to-blue-500', disabled: false },
-                                    { id: 'mentor', label: 'Mentor', gradient: 'from-cyan-500 to-blue-500', disabled: true },
-                                    { id: 'teacher', label: 'Teacher', gradient: 'from-green-400 to-blue-600', disabled: true }
-                                ].map((roleOption) => (
-                                    <div key={roleOption.id} className="relative group">
-                                        <button
-                                            type="button"
-                                            onClick={() => !roleOption.disabled && setRole(roleOption.id)}
-                                            className={`relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-md font-medium text-gray-900 rounded-lg group bg-gradient-to-br ${roleOption.gradient} hover:text-white dark:text-white focus:ring-4 focus:outline-none ${
-                                                role === roleOption.id 
-                                                ? 'ring-2 ring-blue-500' 
-                                                : ''
-                                            } ${roleOption.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                            disabled={roleOption.disabled}
-                                        >
-                                            <span className={`relative px-8 py-1.5 transition-all ease-in duration-75 rounded-md ${
-                                                role === roleOption.id
-                                                ? 'bg-transparent text-white'
-                                                : 'bg-white hover:text-white dark:bg-gray-900 dark:text-white'
-                                            } group-hover:bg-transparent group-hover:dark:bg-transparent`}>
-                                                {roleOption.label}
-                                            </span>
-                                        </button>
-                                        {roleOption.disabled && (
-                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                                                Currently unavailable
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-
-
-                            {/* Attendance Status Dropdown */}
-                            <label htmlFor="attendanceStatus" className="block text-sm font-medium mb-2">
-                                Attendance Status <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                id="attendanceStatus"
-                                value={attendanceStatus}
-                                onChange={(e) => setAttendanceStatus(e.target.value)}
-                                className="w-full px-5 py-3 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="">Select status</option>
-                                <option value="attending">Attending</option>
-                                <option value="withdraw">Withdraw</option>
-                                <option value="onLeave">On Leave</option>
-                                <option value="graduated">Graduated</option>
-                            </select>
-
-                            {/* Submit Button */}
-                            <div className="pt-4">
-                              <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full px-5 py-3 text-white bg-[#047d8a] hover:bg-[#036570] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                {loading ? 'Saving...' : 'Complete Setup'}
-                              </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                {/* Desktop Layout - Right Section */}
-                <div className="flex-1 flex py-36">
-                    <div className="mt-8">
-                        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Your Virtual ID Card</h2>
-                        <p className="text-gray-600 dark:text-gray-300">This is how your ID card will appear. You can customize your profile picture.</p>
-                        <div className="flex justify-center items-center mt-6">
-                            <CardContainer userData={userData} />
-                        </div>
-                    </div>
-                </div>
-              </>
-            )}
+            {/* Right Section - Pass userData to Card Preview */}
+            {/* appears on desktop screen */}
+            <div className="hidden lg:flex flex-1 items-start justify-center">
+              <CardPreview />
+            </div>
         </div>
     </>
   );
