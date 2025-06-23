@@ -24,6 +24,8 @@ export default function Dashboard() {
   const auth = getAuth();
   const db = getFirestore();
 
+  console.log('Dashboard mount:', { currentUser, userDataObj, loading });
+
   {/** Demo info */}
   const userStats = {
     eventsAttended: 5,
@@ -157,57 +159,16 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      try {
-        if (!user) {
-          router.push('/Login');
-          return;
-        }
-
-        const userRef = doc(db, 'users', user.uid);
-        const userSnap = await getDoc(userRef);
-
-        if (!userSnap.exists()) {
-          router.push('/setup');
-          return;
-        }
-
-        const userData = userSnap.data();
-
-        // If role is not student, redirect to appropriate dashboard
-        if (['teacher', 'mentor', 'admin'].includes(userData.role)) {
-          router.push('/adm-dashboard');
-          return;
-        } else if (userData.role !== 'student') {
-          router.push('/setup');
-          return;
-        }
-
-        // If we get here, user is authorized
-        setShowLoading(false);
-
-      } catch (error) {
-        console.error('Error checking user access:', error);
-        router.push('/login');
-      }
-    });
-
-    // Cleanup subscription
-    return () => unsubscribe();
-  }, [auth, db, router]);
-
-  useEffect(() => {
-    if (userDataObj && JSON.stringify(userDataObj) !== JSON.stringify(data)) {
+    console.log('Dashboard useEffect:', { currentUser, userDataObj, loading });
+    if (!loading && !currentUser) {
+      router.push('/Login');
+      return;
+    }
+    if (!loading && currentUser) {
+      setShowLoading(false);
       setData(userDataObj);
     }
-  }, [userDataObj, data]);
-  
-  // Handle redirect after loading is complete
-  useEffect(() => {
-    if (!showLoading && !currentUser) {
-      router.push('/Login'); // Use router.push for client-side navigation
-    }
-  }, [showLoading, currentUser, router]);
+  }, [currentUser, loading, router, userDataObj]);
 
   if (showLoading) {
     return (
@@ -497,7 +458,7 @@ export default function Dashboard() {
                             </svg>
                             <span>Max: {isEvent ? (item.maxParticipants || 'Unlimited') : (item.maxStudents || 'Unlimited')} participants</span>
                           </div>
-                          <a 
+                          <Link 
                             href={isEvent ? "/events" : "/resources"} 
                             className="inline-flex items-center px-4 py-2 bg-[#387d8a] text-white text-sm font-medium rounded-lg hover:bg-[#2c5f6a] transition-all duration-200 group-hover:shadow-md"
                           >
@@ -505,7 +466,7 @@ export default function Dashboard() {
                             <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                             </svg>
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -529,12 +490,12 @@ export default function Dashboard() {
               <p className="text-xl text-gray-600 mb-8 font-medium">
                 Set yourself up for <span className="text-[#387d8a]">academic success</span> with our <span className="text-[#387d8a]">study planner</span>!
               </p>
-              <a href="/resources" className="inline-flex items-center px-6 py-3 rounded-lg bg-[#387d8a] text-white font-medium hover:bg-[#2c5f6a] transition-colors duration-200">
+              <Link href="/resources" className="inline-flex items-center px-6 py-3 rounded-lg bg-[#387d8a] text-white font-medium hover:bg-[#2c5f6a] transition-colors duration-200">
                 Resources
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </a>
+              </Link>
             </div>
             
             {/* Right side - Illustration */}

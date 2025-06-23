@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation'
 import Loading from '@/components/Loading'
 
 export default function Page() {
-  const { currentUser, loading } = useAuth()
+  const { userDataObj, loading } = useAuth()
   const router = useRouter()
   const [showLoading, setShowLoading] = useState(true)
 
   useEffect(() => {
     if (!loading) {
-      if (!currentUser) {
+      if (!userDataObj) {
         // User is not authenticated, redirect to login
         router.push('/Login')
         return
@@ -20,7 +20,7 @@ export default function Page() {
       // User is authenticated, show the profile page
       setShowLoading(false)
     }
-  }, [currentUser, loading, router])
+  }, [userDataObj, loading, router])
 
   // Show loading while checking authentication
   if (loading || showLoading) {
@@ -32,7 +32,7 @@ export default function Page() {
   }
 
   // Only render ProfileScreen if user is authenticated
-  if (!currentUser) {
+  if (!userDataObj) {
     return null // This should not be reached due to redirect, but just in case
   }
 

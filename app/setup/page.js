@@ -10,6 +10,7 @@ import { DotGothic16, Geist_Mono } from 'next/font/google';
 import Marquee from '@/components/card/Marquee';
 import ImageUpload from '@/components/ImageUpload';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/context/AuthContext';
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -39,6 +40,9 @@ export default function Page() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const isMobile = useIsMobile();
+  const [successMessage, setSuccessMessage] = useState('');
+  const { currentUser, userDataObj, loading: authLoading } = useAuth();
+  const [setupCompleted, setSetupCompleted] = useState(false);
   
   const router = useRouter();
   const auth = getAuth();
@@ -77,7 +81,7 @@ export default function Page() {
         name,
         studentId: `TNT-${studentId}`,
         major,
-        role,
+        role: role.trim().toLowerCase(),
         yearLevel: enrolledYear,
         semester: graduationYear,
         attendanceStatus,
@@ -93,24 +97,53 @@ export default function Page() {
 
       const userData = updatedDoc.data();
       
-      // Redirect based on verified role from database
-      switch(userData.role) {
-        case 'student':
-          router.push('/user-dashboard');
-          break;
-        case 'admin':
-          router.push('/adm-dashboard');
-          break;
-        default:
-          setError('Invalid role in database');
-          setLoading(false);
-          return;
+      // Force reload of current user to update AuthContext
+      if (auth.currentUser) {
+        await auth.currentUser.reload();
       }
+      // Redirect based on verified role from database
+      setLoading(false);
+      setError('');
+      setSuccessMessage('Setup complete! Redirecting...');
+      setSetupCompleted(true);
     } catch (err) {
       setError('Failed to update profile: ' + err.message);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // If user is already set up, redirect to dashboard
+    if (
+      !loading &&
+      currentUser &&
+      userDataObj &&
+      userDataObj.role &&
+      userDataObj.role.trim() !== ''
+    ) {
+      if (!setupCompleted) {
+        router.push('/user-dashboard');
+      }
+    }
+    // Only show loader and reload if user is not already set up
+    if (
+      setupCompleted &&
+      (!userDataObj || !userDataObj.role || userDataObj.role.trim() === '')
+    ) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1200);
+    }
+    // If setupCompleted and userDataObj.role is set, redirect immediately
+    if (
+      setupCompleted &&
+      userDataObj &&
+      userDataObj.role &&
+      userDataObj.role.trim() !== ''
+    ) {
+      router.push('/user-dashboard');
+    }
+  }, [loading, currentUser, userDataObj, router, setupCompleted]);
 
   // Add this new function to get available majors based on year level
   const getAvailableMajors = () => {
@@ -243,7 +276,16 @@ export default function Page() {
               <p className="ml-3 text-white/75 text-lg">Your email is now verified!</p>
           </div>
         )}
-        <div className="flex flex-col lg:flex-row min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+        {/* Only show loader if setupCompleted */}
+        {setupCompleted && (
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white bg-opacity-80">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-teal-600 mb-4"></div>
+            <p className="text-lg text-teal-700">Finalizing your setup, please wait...</p>
+          </div>
+        )}
+        {/* Only show the setup form if not setupCompleted */}
+        {!setupCompleted && (!userDataObj || !userDataObj.role || userDataObj.role.trim() === '') && (
+          <div className="flex flex-col lg:flex-row min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
             
             {/* Left Form Section - Adjusted width */}
             <div className="flex-1 flex flex-col px-16 max-sm:px-8 py-12 lg:w-1/2">
@@ -420,6 +462,10 @@ export default function Page() {
               <CardPreview />
             </div>
         </div>
+        )}
+        {successMessage && (
+          <div className="text-green-600 text-center my-4">{successMessage}</div>
+        )}
     </>
   );
 }

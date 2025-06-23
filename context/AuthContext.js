@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndP
 import { doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from "firebase/firestore"
 import { sendEmailVerification } from "firebase/auth";
 import { useState, useEffect, useContext } from "react"
+import { useRouter } from 'next/navigation';
 
 const AuthContext = React.createContext()
 export function useAuth() {
@@ -15,6 +16,7 @@ export function AuthProvider({ children }) {
     const [ currentUser, setCurrentUser ] = useState(null);
     const [ userDataObj, setUserDataObj ] = useState(null);
     const [ loading, setLoading ] = useState(true); // Initialize true for initial auth check
+    const router = useRouter();
 
     // Handle browser close/unload events
     useEffect(() => {
@@ -171,23 +173,28 @@ export function AuthProvider({ children }) {
                     // Return success with redirect info instead of using window.location.href
                     return { success: true, redirectTo: "/setup" };
                 } else {
-                    // Role is set; return success with dashboard redirect
-                    return { success: true, redirectTo: "/dashboard" };
+                    // Role is set; return success with user-dashboard redirect
+                    return { success: true, redirectTo: "/user-dashboard" };
                 }
             } else {
                 throw new Error("User data not found in Firestore.");
             }
         } catch (error) {
-            let errorMessage = "An unknown error occurred. Please try again.";
-            
             // Log detailed error information for debugging
-            console.error("Login Error Details:", {
-                code: error.code,
-                message: error.message,
-                stack: error.stack
+            console.error("Login Error Details:", error, {
+                code: error?.code,
+                message: error?.message,
+                stack: error?.stack
             });
             
-            switch (error.code) {
+            let errorMessage = "An unknown error occurred. Please try again.";
+            if (typeof error === 'string') {
+                errorMessage = error;
+            } else if (error && error.message) {
+                errorMessage = error.message;
+            }
+
+            switch (error?.code) {
                 case 'auth/user-not-found':
                     errorMessage = "No account found with this email. Please check your email or register.";
                     break;
@@ -241,19 +248,20 @@ export function AuthProvider({ children }) {
             await signOut(auth)
             
             // Redirect to login page after successful logout
-            window.location.href = '/Login'
+            router.push('/Login')
         } catch (error) {
             console.error('Error during logout:', error)
             // Even if there's an error, clear local state and redirect
             setUserDataObj(null)
             setCurrentUser(null)
-            window.location.href = '/Login'
+            router.push('/Login')
         }
     }
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setLoading(true); // Start loading
+            console.log('AuthContext onAuthStateChanged user:', user);
             if (user) {
                 try {
                     await user.reload();
@@ -262,15 +270,24 @@ export function AuthProvider({ children }) {
                         setCurrentUser(null);
                         setUserDataObj(null);
                     } else {
+                        console.log('Setting currentUser:', user);
                         setCurrentUser(user);
                         // Only try to fetch user data if user is still authenticated
                         if (auth.currentUser) {
                             const docRef = doc(db, 'users', user.uid);
                             const docSnap = await getDoc(docRef);
+                            console.log('AuthContext docSnap.exists():', docSnap.exists());
                             if (docSnap.exists()) {
-                                setUserDataObj(docSnap.data());
+                                const userData = docSnap.data();
+                                console.log('AuthContext userData:', userData);
+                                console.log('Setting userDataObj:', userData);
+                                setUserDataObj(userData);
                             } else {
-                                const defaultData = { email: user.email, createdAt: new Date() };
+                                const defaultData = { 
+                                    email: user.email, 
+                                    createdAt: new Date(),
+                                    setupCompleted: false 
+                                };
                                 await setDoc(docRef, defaultData, { merge: true });
                                 setUserDataObj(defaultData);
                             }
@@ -283,16 +300,19 @@ export function AuthProvider({ children }) {
                         setCurrentUser(null);
                         setUserDataObj(null);
                     }
+                } finally {
+                    setLoading(false); // Stop loading after all operations
                 }
             } else {
+                console.log('No user found, clearing state');
                 setCurrentUser(null);
                 setUserDataObj(null);
+                setLoading(false);
             }
-            setLoading(false); // Stop loading after all async operations
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [auth, db]);
 
     const value = {
         currentUser,
