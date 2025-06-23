@@ -5,16 +5,21 @@ import { getAuth } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 // import CardContainer from '@/components/card/CardContainer';
-import { Geist_Mono } from 'next/font/google';
+import { DotGothic16, Geist_Mono } from 'next/font/google';
 // import Profile from  '../../assets/img/profile.jpg';
 import Marquee from '@/components/card/Marquee';
 import ImageUpload from '@/components/ImageUpload';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { dotGothic16 } from '@/components/fonts';
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const dotGothic16 = DotGothic16({
+  variable: "--font-dot-gothic-16",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export default function Page() {
@@ -193,25 +198,30 @@ export default function Page() {
               <h1 className={`${dotGothic16.className} max-sm:text-[28px] max-sm:font-bold max-sm:text-gray-900 text-[49px] text-nowrap flex items-center mb-[4px]`}>Student ID</h1>
               <div className="w-full border-t-[2px] border-dashed border-black max-sm:my-2 my-5" />
 
-              <div className="grid grid-cols-2 gap-4 max-sm:text-[15px] text-[20px]">
-                <div className="flex flex-col justify-between max-w-[200px]">
-                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>
-                    Name
-                  </span>
-                  <Marquee>{userData.name}</Marquee>
+              <div className="flex flex-col gap-2 max-sm:text-[15px] text-[20px]">
+                {/* First Row: Name & Roll No. */}
+                <div className="flex flex-row gap-8 max-sm:gap-4 w-full">
+                  <div className="flex flex-col max-w-[200px] flex-1">
+                    <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>
+                      Name
+                    </span>
+                    <Marquee>{userData.name}</Marquee>
+                  </div>
+                  <div className="flex flex-col flex-1">
+                    <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Roll No.</span>
+                    <Marquee>{`TNT ${userData.studentId}`}</Marquee>
+                  </div>
                 </div>
-
-                <div className="flex flex-col justify-between">
-                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Roll No.</span>
-                  <Marquee>{`TNT ${userData.studentId}`}</Marquee>
-                </div>
-                <div className="flex flex-col justify-between">
-                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Year</span>
-                  <Marquee>{formatYearSemester(userData.yearLevel, userData.semester)}</Marquee>
-                </div>
-                <div className="flex flex-col justify-between">
-                  <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Major</span>
-                  <Marquee>{userData.major}</Marquee>
+                {/* Second Row: Year & Major */}
+                <div className="flex flex-row gap-8 max-sm:gap-4 w-full">
+                  <div className="flex flex-col flex-1">
+                    <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Year</span>
+                    <Marquee>{formatYearSemester(userData.yearLevel, userData.semester)}</Marquee>
+                  </div>
+                  <div className="flex flex-col flex-1">
+                    <span className={`${geistMono.className} font-light max-sm:text-[8px] text-sm text-nowrap`}>Major</span>
+                    <Marquee>{userData.major}</Marquee>
+                  </div>
                 </div>
               </div>
             </div>
@@ -238,7 +248,7 @@ export default function Page() {
             {/* Left Form Section - Adjusted width */}
             <div className="flex-1 flex flex-col px-16 max-sm:px-8 py-12 lg:w-1/2">
                 <div className="w-full space-y-6 mb-8">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Nice to meet you! Let&apos;s get acquainted.</h1>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Nice to meet you! Let's get acquainted.</h1>
                     
                     {/* appears on phone screen */}
                     <div className="lg:hidden">
