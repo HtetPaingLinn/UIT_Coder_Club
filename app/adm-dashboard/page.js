@@ -231,6 +231,7 @@ export default function AdminDashboard() {
         // Initial fetch
         fetchRealTimeActivities();
 
+        // Cleanup subscription on unmount
         return () => {
           console.log('Cleaning up real-time activities listeners...');
           unsubscribeUsers();
@@ -242,7 +243,7 @@ export default function AdminDashboard() {
         setActivities([]);
       }
     }
-  }, [showLoading, currentUser]);
+  }, [showLoading, currentUser, fetchRealTimeActivities]);
 
   // Function to get activity icon and color
   const getActivityConfig = (type) => {
@@ -519,14 +520,15 @@ export default function AdminDashboard() {
       }
     });
 
+    // Cleanup subscription
     return () => unsubscribe();
-  }, []);
+  }, [auth, db, router]);
 
   useEffect(() => {
     if (userDataObj && JSON.stringify(userDataObj) !== JSON.stringify(data)) {
       setData(userDataObj);
     }
-  }, [userDataObj]);
+  }, [userDataObj, data]);
   
   useEffect(() => {
     if (!showLoading && !currentUser) {
@@ -535,15 +537,13 @@ export default function AdminDashboard() {
   }, [showLoading, currentUser, router]);
 
   useEffect(() => {
-    if (!showLoading) {
-      fetchUserCount();
-      fetchMentorCount();
-      fetchWorkshopCount();
-      fetchEventCount();
-      fetchStudentList();
-      // fetchActivities(); // Fetch activities when dashboard loads
-    }
-  }, [showLoading]);
+    // Fetch counts and lists
+    fetchUserCount();
+    fetchEventCount();
+    fetchWorkshopCount();
+    fetchMentorCount();
+    fetchStudentList();
+  }, [fetchUserCount, fetchEventCount, fetchWorkshopCount, fetchMentorCount, fetchStudentList]);
 
   if (showLoading) {
     return (

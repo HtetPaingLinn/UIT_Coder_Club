@@ -72,8 +72,9 @@ export default function ResourcesPage() {
       }
     });
 
+    // Cleanup subscription
     return () => unsubscribe();
-  }, []);
+  }, [auth, db, router]);
 
   // Fetch resources
   useEffect(() => {
@@ -83,6 +84,7 @@ export default function ResourcesPage() {
   }, [showLoading]);
 
   const fetchResources = async () => {
+    setShowLoading(true);
     try {
       const resourcesRef = collection(db, 'resources');
       const q = query(resourcesRef, orderBy('createdAt', 'desc'));
@@ -94,6 +96,8 @@ export default function ResourcesPage() {
       setResources(resourcesList);
     } catch (error) {
       console.error('Error fetching resources:', error);
+    } finally {
+      setShowLoading(false);
     }
   };
 

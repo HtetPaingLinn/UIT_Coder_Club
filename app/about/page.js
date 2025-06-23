@@ -5,6 +5,7 @@ import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { Timeline } from '@/components/ui/timeline';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const members = [
   {
@@ -303,9 +304,11 @@ export default function About() {
                 </div>
                 <div className="bg-white p-6">
                   <div className="flex justify-center mb-4">
-                    <img 
+                    <Image 
                       src="/president.jpg" 
                       alt="Shin Thant Phyo - President" 
+                      width={232}
+                      height={232}
                       className="h-65 w-65 self-center rounded-md object-cover object-top"
                     />
                   </div>
@@ -325,9 +328,11 @@ export default function About() {
                 </div>
                 <div className="bg-white p-6">
                   <div className="flex justify-center mb-4">
-                    <img 
+                    <Image 
                       src="/vp.png" 
                       alt="Htet Paing Linn - Vice President" 
+                      width={232}
+                      height={232}
                       className="h-65 w-65 self-center rounded-md object-cover object-top"
                     />
                   </div>
@@ -355,9 +360,11 @@ export default function About() {
                 </div>
                 <div className="bg-white p-6">
                   <div className="flex justify-center mb-4">
-                    <img 
+                    <Image 
                       src="/pyaelinn.png" 
                       alt="Pyae Linn - General Secretary (AI)" 
+                      width={232}
+                      height={232}
                       className="h-65 w-65 self-center rounded-md object-cover object-top"
                     />
                   </div>
@@ -377,9 +384,11 @@ export default function About() {
                 </div>
                 <div className="bg-white p-6">
                   <div className="flex justify-center mb-4">
-                    <img 
+                    <Image 
                       src="/zawlinnhtet.png" 
                       alt="Zaw Linn Htet - Deputy General Secretary (AI)" 
+                      width={232}
+                      height={232}
                       className="h-65 w-65 self-center rounded-md object-cover object-top"
                     />
                   </div>
@@ -399,9 +408,11 @@ export default function About() {
                 </div>
                 <div className="bg-white p-6">
                   <div className="flex justify-center mb-4">
-                    <img 
+                    <Image 
                       src="/htoothetnaung.png" 
                       alt="Htoo Thant Naung - Deputy General Secretary (AI)" 
+                      width={232}
+                      height={232}
                       className="h-65 w-65 self-center rounded-md object-cover object-top"
                     />
                   </div>
@@ -428,9 +439,11 @@ export default function About() {
                 </div>
                 <div className="bg-white p-6">
                   <div className="flex justify-center mb-4">
-                    <img 
+                    <Image 
                       src="/htetmyetzaw.jpg" 
                       alt="Htet Myet Zaw - General Secretary (Web)" 
+                      width={232}
+                      height={232}
                       className="h-65 w-65 self-center rounded-md object-cover object-top"
                     />
                   </div>
@@ -450,9 +463,11 @@ export default function About() {
                 </div>
                 <div className="bg-white p-6">
                   <div className="flex justify-center mb-4">
-                    <img 
+                    <Image 
                       src="/aungkaungmyat.jpg" 
                       alt="Aung Kaung Myat - Deputy General Secretary (Web)" 
+                      width={232}
+                      height={232}
                       className="h-65 w-65 self-center rounded-md object-cover object-top"
                     />
                   </div>
@@ -550,14 +565,14 @@ export default function About() {
                 <span className="px-3 py-1 mt-1 inline-block text-sm font-semibold text-white bg-gray-500 rounded-md shadow-md">Full-Stack Development Lead</span>
               </div>
               <div className="bg-white p-3 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
-                <img src="/htetmyetzaw.jpg" alt="Htet Myet Zaw" className="w-52 h-64 object-cover rounded-md" />
+                <Image src="/htetmyetzaw.jpg" alt="Htet Myet Zaw" width={208} height={256} className="w-52 h-64 object-cover rounded-md" />
               </div>
             </div>
 
             {/* Htet Paing Linn */}
             <div className="relative md:scale-110 z-10 order-first md:order-none">
               <div className="bg-white p-3 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
-                <img src="/vp.png" alt="Htet Paing Linn" className="w-56 h-72 object-cover rounded-md" />
+                <Image src="/vp.png" alt="Htet Paing Linn" width={224} height={288} className="w-56 h-72 object-cover rounded-md" />
               </div>
               <div className="text-center mt-4">
                 <h3 className="text-xl font-bold text-gray-800">Htet Paing Linn</h3>
@@ -572,7 +587,7 @@ export default function About() {
                 <span className="px-3 py-1 mt-1 inline-block text-sm font-semibold text-white bg-purple-600 rounded-md shadow-md">Creation Hub Head</span>
               </div>
               <div className="bg-white p-3 rounded-lg shadow-xl transform hover:scale-105 transition-transform duration-300">
-                <img src="/aungkaungmyat.jpg" alt="Aung Kaung Myat" className="w-52 h-64 object-cover object-top rounded-md" />
+                <Image src="/aungkaungmyat.jpg" alt="Aung Kaung Myat" width={208} height={256} className="w-52 h-64 object-cover object-top rounded-md" />
               </div>
             </div>
 

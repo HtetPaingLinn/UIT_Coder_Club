@@ -194,13 +194,13 @@ export default function Dashboard() {
 
     // Cleanup subscription
     return () => unsubscribe();
-  }, []);
+  }, [auth, db, router]);
 
   useEffect(() => {
     if (userDataObj && JSON.stringify(userDataObj) !== JSON.stringify(data)) {
       setData(userDataObj);
     }
-  }, [userDataObj]);
+  }, [userDataObj, data]);
   
   // Handle redirect after loading is complete
   useEffect(() => {
@@ -278,9 +278,10 @@ export default function Dashboard() {
                         {/* Image */}
                         <CardItem translateZ="50" className="relative w-full sm:w-2/5 h-32 sm:h-auto">
                           <div className="absolute inset-0 bg-gradient-to-br from-[#387d8a]/20 to-transparent"></div>
-                          <img
+                          <Image
                             src={announcement.image}
                             alt={announcement.title}
+                            layout="fill"
                             className="w-full h-full object-cover"
                           />
                           {/* Type Badge */}
@@ -330,9 +331,11 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 lg:gap-24 items-center">
             {/* Left side - Illustration */}
             <div className="relative flex justify-center items-center h-full mb-8 md:mb-0">
-              <img
+              <Image
                 src="/event-side-img.png" 
                 alt="Events Illustration"
+                width={500}
+                height={500}
                 className="max-w-[80vw] sm:max-w-xs md:max-w-full h-auto object-contain"
               />
             </div>
@@ -536,7 +539,7 @@ export default function Dashboard() {
             
             {/* Right side - Illustration */}
             <div className="relative flex justify-center items-center h-full">
-              <img src="/planner.png" alt="Study Planner Illustration" width={550} height={550} className="max-w-full h-auto object-contain"/>
+              <Image src="/planner.png" alt="Study Planner Illustration" width={550} height={550} className="max-w-full h-auto object-contain"/>
             </div>
           </div>
         </div>

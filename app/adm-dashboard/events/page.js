@@ -365,16 +365,15 @@ export default function EventsPage() {
       }
     });
 
+    // Cleanup subscription on component unmount
     return () => unsubscribe();
-  }, []);
+  }, [auth, db, router]);
 
-  // Fetch events
   useEffect(() => {
-    if (!showLoading) {
-      fetchEvents();
-    }
-  }, [showLoading]);
+    fetchEvents();
+  }, [fetchEvents]);
 
+  // Function to fetch events from Firestore
   const fetchEvents = async () => {
     try {
       const eventsRef = collection(db, 'events');

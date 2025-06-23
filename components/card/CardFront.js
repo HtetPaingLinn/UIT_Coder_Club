@@ -11,6 +11,11 @@ import { auth } from '@/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { dotGothic16 } from '@/components/fonts';
 
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export default function Cardfront({ userData }) {
   const [profileImage, setProfileImage] = useState('/boy.jpeg'); // Default image
   const [userId, setUserId] = useState(null);
