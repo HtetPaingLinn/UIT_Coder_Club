@@ -98,7 +98,7 @@ export default function ProfileScreen() {
     // else, keep the current major
   }, [enrolledYear]);
 
-  // Track if any field has changed
+  // Track if any field has changed, including profile image
   const hasChanges =
     userDataObj && (
       name !== (userDataObj.name || '') ||
@@ -107,7 +107,8 @@ export default function ProfileScreen() {
       semester !== (userDataObj.semester || '') ||
       role !== (userDataObj.role || 'student') ||
       major !== (userDataObj.major || '') ||
-      attendanceStatus !== (userDataObj.attendanceStatus || '')
+      attendanceStatus !== (userDataObj.attendanceStatus || '') ||
+      (uploadedImageUrl && uploadedImageUrl !== (userDataObj.profileImage || ''))
     );
 
   // Handle image upload
@@ -136,6 +137,8 @@ export default function ProfileScreen() {
         profileImage: uploadedImageUrl || profileImage,
       });
       setSaveMessage('Profile updated successfully!');
+      // Refresh the page to show the updated image
+      setTimeout(() => { window.location.reload(); }, 800);
     } catch (err) {
       setSaveMessage('Failed to update profile: ' + err.message);
     } finally {

@@ -9,7 +9,7 @@ import Image from 'next/image';
 
 export default function Events() {
   // State to manage the selected date and events for that date
-  const [selectedDate, setSelectedDate] = React.useState(new Date(2025, 5, 19));
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [eventsForSelectedDate, setEventsForSelectedDate] = React.useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [loading, setLoading] = useState(true);
