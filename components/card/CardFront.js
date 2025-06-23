@@ -3,24 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { DotGothic16, Geist_Mono } from 'next/font/google';
+import { Geist_Mono } from 'next/font/google';
 import Marquee from './Marquee';
 import ImageUpload from '../ImageUpload';
 import { updateUserProfile, getUserProfile } from '../../firebase/utils';
 import { auth } from '@/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  weight: "400",
-});
-
-const dotGothic16 = DotGothic16({
-  variable: "--font-dot-gothic-16",
-  subsets: ["latin"],
-  weight: "400",
-})
+import { dotGothic16 } from '@/components/fonts';
 
 export default function Cardfront({ userData }) {
   const [profileImage, setProfileImage] = useState('/boy.jpeg'); // Default image

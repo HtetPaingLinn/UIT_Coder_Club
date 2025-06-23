@@ -5,21 +5,16 @@ import { getAuth } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 // import CardContainer from '@/components/card/CardContainer';
-import { DotGothic16, Geist_Mono } from 'next/font/google';
+import { Geist_Mono } from 'next/font/google';
 // import Profile from  '../../assets/img/profile.jpg';
 import Marquee from '@/components/card/Marquee';
 import ImageUpload from '@/components/ImageUpload';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { dotGothic16 } from '@/components/fonts';
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const dotGothic16 = DotGothic16({
-  variable: "--font-dot-gothic-16",
-  subsets: ["latin"],
-  weight: "400",
 });
 
 export default function Page() {

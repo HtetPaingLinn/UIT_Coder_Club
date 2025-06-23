@@ -3,20 +3,15 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { DotGothic16, Geist_Mono } from 'next/font/google';
+import { Geist_Mono } from 'next/font/google';
 import Marquee from './Marquee';
 import AnimatedQRCode from './AnimatedQRCode';
+import { dotGothic16 } from '@/components/fonts';
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-const dotGothic16 = DotGothic16({
-  variable: "--font-dot-gothic-16",
-  subsets: ["latin"],
-  weight: "400",
-})
 
 export default function Cardback() {
 

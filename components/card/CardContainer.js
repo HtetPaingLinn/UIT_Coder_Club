@@ -8,19 +8,13 @@ import Cardfront from './CardFront';
 import { motion } from 'framer-motion';
 import { Download, Link as LinkIcon, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { DotGothic16 } from 'next/font/google';
+import { dotGothic16 } from '@/components/fonts';
 
 import {
   FaFacebookF,
   FaTwitter,
   FaTelegramPlane,
 } from 'react-icons/fa';
-
-const dotGothic16 = DotGothic16({
-  variable: "--font-dot-gothic-16",
-  subsets: ["latin"],
-  weight: "400",
-})
 
 export default function CardContainer({ userData }) {
   const [isFlipped, setIsFlipped] = useState(false);
