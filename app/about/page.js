@@ -4,6 +4,7 @@ import { FaCode, FaRobot, FaLaptopCode, FaUsers, FaGraduationCap, FaLightbulb, F
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { Timeline } from '@/components/ui/timeline';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 
 const members = [
   {
@@ -128,9 +129,11 @@ export default function About() {
             
             {/* Call to Action */}
             <div className="mt-8 sm:mt-12">
+            <Link href= "/contact">
               <button className="btn btn-primary text-base sm:text-lg px-6 sm:px-8 py-2 sm:py-3 rounded-lg bg-[#387d8a] text-white font-medium hover:bg-[#2c5f6a] transition-colors duration-200">
                 Join Our Community
               </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -44,7 +44,7 @@ const latestAnnouncements = [
     id: 1,
     title: 'Hackathon Registration Open',
     description: 'Join our annual hackathon and showcase your coding skills!',
-    date: 'March 10, 2024',
+    date: 'August 2025',
     type: 'Event',
     image: 'https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?q=80&w=500&auto=format&fit=crop'
   },
@@ -52,7 +52,7 @@ const latestAnnouncements = [
     id: 2,
     title: 'New Workshop Series',
     description: 'Learn advanced web development techniques in our new workshop series.',
-    date: 'March 8, 2024',
+    date: 'July 2025',
     type: 'Workshop',
     image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=500&auto=format&fit=crop'
   },
@@ -60,7 +60,7 @@ const latestAnnouncements = [
     id: 3,
     title: 'Club Meeting Schedule',
     description: 'Updated meeting schedule for the upcoming month.',
-    date: 'March 5, 2024',
+    date: 'June 2025',
     type: 'General',
     image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=500&auto=format&fit=crop'
   }
