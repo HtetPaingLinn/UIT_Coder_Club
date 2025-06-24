@@ -414,4 +414,30 @@ export const getAllWorkshops = async () => {
         console.error('Error getting workshops:', error);
         return [];
     }
+};
+
+// Utility to get all participants for a given eventId
+export const getEventParticipants = async (eventId) => {
+    try {
+        const usersRef = collection(db, 'users');
+        const usersSnapshot = await getDocs(usersRef);
+        const participants = [];
+        usersSnapshot.forEach((doc) => {
+            const userData = doc.data();
+            const registeredEvents = userData.registeredEvents || [];
+            if (registeredEvents.includes(eventId)) {
+                participants.push({
+                    uid: doc.id,
+                    name: userData.name || '',
+                    email: userData.email || '',
+                    role: userData.role || '',
+                    ...userData
+                });
+            }
+        });
+        return participants;
+    } catch (error) {
+        console.error('Error fetching event participants:', error);
+        return [];
+    }
 }; 

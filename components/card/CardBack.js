@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function Cardback() {
+export default function Cardback({ userData }) {
 
-  const fakeUrl = "https://www.example.com";
+  const userProfileUrl = `https://uitcoderclub.netlify.app`;
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -34,7 +34,7 @@ export default function Cardback() {
   >
     {/* Left Section - QR Code */}
     <div className="w-1/2 flex justify-center items-center">
-      <AnimatedQRCode url={fakeUrl} />
+      <AnimatedQRCode url={userProfileUrl} />
     </div>
 
     {/* Right Section - Club Signature Logo */}

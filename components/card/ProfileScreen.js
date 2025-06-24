@@ -158,12 +158,21 @@ export default function ProfileScreen() {
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     setPasswordError('');
     setPasswordSuccess('');
     setPasswordLoading(true);
+    // Password regex: min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      setPasswordError('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.');
+      setPasswordLoading(false);
+      return;
+    }
     try {
       const auth = getAuth();
       const user = auth.currentUser;
@@ -178,13 +187,18 @@ export default function ProfileScreen() {
       setNewPassword('');
       setShowPasswordModal(false);
     } catch (err) {
-      if (
-        err.message === 'Firebase: Error (auth/wrong-password).' ||
-        err.message === 'Firebase: Error (auth/invalid-credential).'
-      ) {
-        setPasswordError('Current password does not match');
+      // Prefer error.code if available
+      const code = err.code || '';
+      if (code === 'auth/wrong-password') {
+        setPasswordError('Current password is incorrect.');
+      } else if (code === 'auth/invalid-credential') {
+        setPasswordError('Invalid credentials. Please check your current password.');
+      } else if (code === 'auth/too-many-requests') {
+        setPasswordError('Too many attempts. Please try again later.');
+      } else if (code === 'auth/network-request-failed') {
+        setPasswordError('Network error. Please check your connection.');
       } else {
-        setPasswordError(err.message);
+        setPasswordError(err.message || 'Failed to update password.');
       }
     } finally {
       setPasswordLoading(false);
@@ -261,7 +275,7 @@ export default function ProfileScreen() {
             </div>
           </div>
         </div>
-        <div className={`${dotGothic16.className} relative max-sm:-top-12 text-md text-gray-700 max-sm:text-sm`}>[Tap to View]</div>
+        <div className={`${dotGothic16.className} relative max-sm:-top-12 text-md text-gray-700 max-sm:text-sm`}>[Tap the card for fullscreen]</div>
       </div>
       {/* Right Section - Form */}
       <div className="w-full md:w-1/2 relative max-sm:-top-12 flex flex-col justify-center items-center p-4">
@@ -433,22 +447,42 @@ export default function ProfileScreen() {
             <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-3xl w-10 h-10 flex items-center justify-center" onClick={() => setShowPasswordModal(false)}>&times;</button>
             <h2 className="text-2xl font-bold mb-4">Change Password</h2>
             <form onSubmit={handlePasswordUpdate} className="flex flex-col gap-4">
-              <input
-                type="password"
-                placeholder="Current Password"
-                value={currentPassword}
-                onChange={e => setCurrentPassword(e.target.value)}
-                className="border-gray-700 border-2 rounded-md p-2 bg-amber-50"
-                required
-              />
-              <input
-                type="password"
-                placeholder="New Password"
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                className="border-gray-700 border-2 rounded-md p-2 bg-amber-50"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  placeholder="Current Password"
+                  value={currentPassword}
+                  onChange={e => setCurrentPassword(e.target.value)}
+                  className="border-gray-700 border-2 rounded-md p-2 bg-amber-50 w-full pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-lg"
+                  onClick={() => setShowCurrentPassword(v => !v)}
+                >
+                  {showCurrentPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  placeholder="New Password"
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  className="border-gray-700 border-2 rounded-md p-2 bg-amber-50 w-full pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-lg"
+                  onClick={() => setShowNewPassword(v => !v)}
+                >
+                  {showNewPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
               {passwordError && <div className="text-red-500 text-sm">{passwordError}</div>}
               {passwordSuccess && <div className="text-green-600 text-sm">{passwordSuccess}</div>}
               <button

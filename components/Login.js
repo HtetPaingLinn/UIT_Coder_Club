@@ -18,6 +18,7 @@ export default function Login(props) {
   const [authenticating, setAuthenticating] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')  
   const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     setIsRegister(state);
@@ -92,13 +93,24 @@ export default function Login(props) {
             placeholder='Email'
             type='email'
           />
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className='w-full px-3 sm:px-4 py-2 sm:py-3 md:py-4 text-sm sm:text-base rounded-lg border border-teal-500 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-colors duration-200'
-            placeholder='Password'
-            type='password'
-          />
+          <div className="relative">
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className='w-full px-3 sm:px-4 py-2 sm:py-3 md:py-4 text-sm sm:text-base rounded-lg border border-teal-500 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-colors duration-200 pr-12'
+              placeholder='Password'
+              type={showPassword ? 'text' : 'password'}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white text-sm focus:outline-none"
+              tabIndex={-1}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
           
           <div className='w-full'>
             <Button clickHandler={handleSubmit} text={authenticating ? 'Submitting...' : 'Submit'} full dark />

@@ -22,21 +22,21 @@ export default function CardContainer({ userData }) {
   const router = useRouter(); 
 
   const handleShare = (platform) => {
-    const currentUrl = encodeURIComponent(window.location.href);
+    const shareUrl = `https://uitcoderclub.netlify.app`;
     const text = encodeURIComponent("Check out this awesome digital card I created!");
     
     switch (platform) {
       case 'Facebook':
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank', 'width=600,height=400');
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`, '_blank', 'width=600,height=400');
         break;
       case 'X':
-        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${currentUrl}`, '_blank', 'width=600,height=400');
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${shareUrl}`, '_blank', 'width=600,height=400');
         break;
       case 'Telegram':
-        window.open(`https://t.me/share/url?url=${currentUrl}&text=${text}`, '_blank', 'width=600,height=400');
+        window.open(`https://t.me/share/url?url=${shareUrl}&text=${text}`, '_blank', 'width=600,height=400');
         break;
       case 'CopyLink':
-        navigator.clipboard.writeText(window.location.href)
+        navigator.clipboard.writeText(shareUrl)
           .then(() => alert('Link copied to clipboard!'))
           .catch(err => console.error('Failed to copy: ', err));
         break;
@@ -98,7 +98,7 @@ export default function CardContainer({ userData }) {
               <Cardfront userData={userData} />
             </div>
             <div className="absolute inset-0 [transform:rotateY(180deg)] backface-hidden">
-              <Cardback />
+              <Cardback userData={userData}/>
             </div>
           </motion.div>
         </div>

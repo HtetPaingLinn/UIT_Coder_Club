@@ -205,7 +205,7 @@ export function AuthProvider({ children }) {
                     errorMessage = "Invalid email format. Please enter a valid email address.";
                     break;
                 case 'auth/too-many-requests':
-                    errorMessage = "Too many failed login attempts. Please try again later.";
+                    errorMessage = "Too many failed login attempts or repeated logins without verifying your email. Please check your email for a verification link or try again later.";
                     break;
                 case 'auth/network-request-failed':
                     errorMessage = "Network connection failed. Please check your internet connection and try again.";
