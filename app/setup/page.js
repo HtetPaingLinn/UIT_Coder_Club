@@ -63,7 +63,16 @@ export default function Page() {
     setLoading(true);
 
     // Form validation
-    if (!name || !studentId || !major || !role || !enrolledYear || !graduationYear || !attendanceStatus) {
+    const isMajorRequired = enrolledYear && parseInt(enrolledYear, 10) > 2;
+    if (
+      !name ||
+      !studentId ||
+      (isMajorRequired && !major) ||
+      !role ||
+      !enrolledYear ||
+      !graduationYear ||
+      !attendanceStatus
+    ) {
       setError('Please fill in all required fields');
       setLoading(false);
       return;
@@ -168,7 +177,7 @@ export default function Page() {
     studentId: studentId || "0404",
     yearLevel: enrolledYear || "1",
     semester: graduationYear || "1",
-    major: major || "COMP.SCI"
+    major: major || (enrolledYear && parseInt(enrolledYear, 10) <= 2 ? "N/A" : "Select Major")
   };
 
   // Handle image upload
