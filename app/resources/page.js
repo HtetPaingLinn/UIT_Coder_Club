@@ -172,6 +172,21 @@ export default function Resources() {
         };
         return colors[difficulty] || 'bg-gray-100 text-gray-800';
     };
+
+    // Helper function to get level color
+    const getLevelColor = (level) => {
+        const lowerCaseLevel = level.toLowerCase();
+        if (lowerCaseLevel.includes('beginner')) {
+            return 'bg-green-100 text-green-800';
+        }
+        if (lowerCaseLevel.includes('intermediate')) {
+            return 'bg-yellow-100 text-yellow-800';
+        }
+        if (lowerCaseLevel.includes('advanced')) {
+            return 'bg-red-100 text-red-800';
+        }
+        return 'bg-blue-100 text-blue-800'; // Default for "All Levels" etc.
+    };
   
     return (
       <div className="min-h-screen">
@@ -201,7 +216,9 @@ export default function Resources() {
                         <h4 className="mb-2 text-lg font-semibold">{resource.title}</h4>
                         <p className="text-gray-600 mb-3 text-sm sm:text-base">{resource.description}</p>
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
-                          <span className="text-sm text-primary font-medium">{resource.level}</span>
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getLevelColor(resource.level)}`}>
+                            {resource.level}
+                          </span>
                           <a 
                             href={resource.link} 
                             target="_blank" 

@@ -435,11 +435,11 @@ export default function Events() {
                       <div
                         key={index}
                         className={`
-                          relative cursor-pointer rounded-full
+                          relative cursor-pointer rounded-full transition-colors duration-200
                           ${day === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()
                             ? 'bg-[#EF4444] text-white'
                             : ''}
-                          ${day ? 'hover:bg-gray-100' : 'text-gray-300'}
+                          ${day ? 'hover:bg-teal-100' : 'text-gray-300'}
                           p-1 sm:p-2 md:p-3
                           min-w-[2rem] min-h-[2rem] sm:min-w-[2.5rem] sm:min-h-[2.5rem]
                           flex items-center justify-center mx-auto
